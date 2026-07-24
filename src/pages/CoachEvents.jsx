@@ -1,8 +1,26 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { Users, ChevronRight, Plus, Loader2, CalendarDays } from 'lucide-react'
+import {
+  Users,
+  ChevronRight,
+  Plus,
+  Loader2,
+  CalendarDays,
+  Coins,
+  ArrowLeft,
+} from 'lucide-react'
 import { getCoachSessions } from '../lib/store'
 import { formatDate, formatTime } from '../lib/format'
+
+function Stat({ icon: Icon, label, value }) {
+  return (
+    <div className="flex-1 rounded-card border border-border bg-surface p-3 text-center">
+      <Icon size={18} className="mx-auto text-ink-soft" strokeWidth={1.75} />
+      <p className="mt-1 font-display text-xl font-bold leading-none">{value}</p>
+      <p className="text-xs text-ink-soft">{label}</p>
+    </div>
+  )
+}
 
 export default function CoachEvents() {
   const navigate = useNavigate()
@@ -13,16 +31,36 @@ export default function CoachEvents() {
     getCoachSessions(wallet).then(setSessions)
   }, [wallet])
 
+  const bookings = (sessions || []).reduce((n, s) => n + s.booked, 0)
+  const earnings = (sessions || []).reduce((n, s) => n + s.booked * s.priceNim, 0)
+
   return (
     <div className="mx-auto max-w-2xl px-5 pb-28 pt-5">
-      <h1 className="font-display text-3xl font-extrabold tracking-tight">Your events</h1>
+      <header className="flex items-center justify-between">
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">Coach</h1>
+        <button
+          onClick={() => navigate('/app')}
+          className="flex items-center gap-1 text-sm font-semibold text-ink-soft"
+        >
+          <ArrowLeft size={16} /> Client view
+        </button>
+      </header>
+
+      {/* Stats */}
+      <div className="mt-5 flex gap-3">
+        <Stat icon={CalendarDays} label="Events" value={sessions ? sessions.length : '—'} />
+        <Stat icon={Users} label="Bookings" value={sessions ? bookings : '—'} />
+        <Stat icon={Coins} label="NIM earned" value={sessions ? Number(earnings.toFixed(2)) : '—'} />
+      </div>
+
+      <h2 className="mb-3 mt-7 font-display text-xl font-bold">Your events</h2>
 
       {sessions === null ? (
         <div className="flex justify-center py-16">
           <Loader2 size={28} className="animate-spin text-ink-soft" />
         </div>
       ) : sessions.length === 0 ? (
-        <div className="mt-6 rounded-card border border-border p-8 text-center">
+        <div className="rounded-card border border-border p-8 text-center">
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-muted">
             <CalendarDays size={26} className="text-ink-soft" strokeWidth={1.75} />
           </div>
@@ -37,7 +75,7 @@ export default function CoachEvents() {
           </button>
         </div>
       ) : (
-        <div className="mt-5 space-y-3">
+        <div className="space-y-3">
           {sessions.map((s) => (
             <button
               key={s.id}

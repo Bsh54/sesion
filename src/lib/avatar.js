@@ -10,3 +10,8 @@ export function shortAddress(addr) {
   if (!addr) return ''
   return `${addr.slice(0, 14)}…${addr.slice(-4)}`
 }
+
+// Uploaded profile photo if any, otherwise the generated identicon.
+export function displayAvatar(profileAvatar, wallet) {
+  return profileAvatar || avatarUrl(wallet)
+}

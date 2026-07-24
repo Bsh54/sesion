@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import { ArrowLeft, Loader2, ImagePlus } from 'lucide-react'
 import { getProfile } from '../lib/profile'
 import { createSession } from '../lib/store'
+import { uploadImage } from '../lib/upload'
 import { CATEGORIES, LEVELS, CATEGORY_IMAGE } from '../data/sessions'
 
 const inputClass =
@@ -35,12 +36,27 @@ export default function Create() {
   })
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [image, setImage] = useState('')
+  const [uploading, setUploading] = useState(false)
 
   useEffect(() => {
     getProfile(wallet).then((p) => setCoachName(p.name || ''))
   }, [wallet])
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
+
+  const onImage = async (e) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setUploading(true)
+    try {
+      setImage(await uploadImage(f))
+    } catch {
+      setError('Image upload failed.')
+    } finally {
+      setUploading(false)
+    }
+  }
 
   const submit = async (e) => {
     e.preventDefault()
@@ -61,7 +77,7 @@ export default function Create() {
         location: form.location,
         capacity: Number(form.capacity) || 10,
         description: form.description,
-        image: CATEGORY_IMAGE[form.category],
+        image: image || CATEGORY_IMAGE[form.category],
         coachWallet: wallet,
         coachName,
       })
@@ -94,6 +110,24 @@ export default function Create() {
             maxLength={80}
             placeholder="Sunrise Vinyasa Flow"
           />
+        </Field>
+
+        <Field label="Cover image">
+          <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-dashed border-border bg-surface p-3">
+            <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-muted">
+              {uploading ? (
+                <Loader2 size={20} className="animate-spin text-ink-soft" />
+              ) : image ? (
+                <img src={image} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <ImagePlus size={22} className="text-ink-soft" />
+              )}
+            </span>
+            <span className="text-sm text-ink-soft">
+              {image ? 'Change photo' : 'Upload a photo (optional)'}
+            </span>
+            <input type="file" accept="image/*" onChange={onImage} className="hidden" />
+          </label>
         </Field>
 
         <div className="grid grid-cols-2 gap-4">

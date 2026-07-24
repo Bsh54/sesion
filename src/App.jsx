@@ -1,11 +1,10 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Home from './pages/Home'
 import SessionDetail from './pages/SessionDetail'
 import Tickets from './pages/Tickets'
 import Profile from './pages/Profile'
 import CoachLayout from './pages/CoachLayout'
-import CoachDashboard from './pages/CoachDashboard'
 import CoachEvents from './pages/CoachEvents'
 import CoachEventDetail from './pages/CoachEventDetail'
 import CoachProfile from './pages/CoachProfile'
@@ -29,7 +28,7 @@ export default function App() {
 
         {/* Coach space (own navigation) */}
         <Route path="/coach" element={<CoachLayout />}>
-          <Route index element={<CoachDashboard />} />
+          <Route index element={<Navigate to="/coach/events" replace />} />
           <Route path="events" element={<CoachEvents />} />
           <Route path="create" element={<Create />} />
           <Route path="profile" element={<CoachProfile />} />

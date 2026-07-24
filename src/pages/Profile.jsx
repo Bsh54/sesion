@@ -10,12 +10,14 @@ import {
   Loader2,
   Wallet,
   Pencil,
+  Camera,
 } from 'lucide-react'
 import { getAddress } from '../lib/nimiq'
 import { getTickets } from '../lib/tickets'
 import { getProfile, saveProfile } from '../lib/profile'
 import { getSessions } from '../lib/store'
-import { avatarUrl, shortAddress } from '../lib/avatar'
+import { uploadImage } from '../lib/upload'
+import { displayAvatar, shortAddress } from '../lib/avatar'
 import { CATEGORIES } from '../data/sessions'
 import { formatDate, formatTime } from '../lib/format'
 
@@ -34,6 +36,8 @@ export default function Profile() {
   const [wallet, setWallet] = useState(undefined) // undefined = loading, null = none
   const [booked, setBooked] = useState([])
   const [name, setName] = useState('')
+  const [avatar, setAvatar] = useState('')
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
   const [saving, setSaving] = useState(false)
@@ -48,6 +52,7 @@ export default function Profile() {
       const map = Object.fromEntries(sessions.map((s) => [s.id, s]))
       setBooked(tks.map((t) => ({ ...t, session: map[t.sessionId] })).filter((x) => x.session))
       setName(p.name || '')
+      setAvatar(p.avatar || '')
     })()
   }, [])
 
@@ -93,6 +98,21 @@ export default function Profile() {
     }
   }
 
+  const onAvatar = async (e) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setUploadingAvatar(true)
+    try {
+      const url = await uploadImage(f)
+      await saveProfile({ wallet, avatar: url })
+      setAvatar(url)
+    } catch {
+      /* ignore */
+    } finally {
+      setUploadingAvatar(false)
+    }
+  }
+
   const save = async () => {
     setSaving(true)
     try {
@@ -114,11 +134,21 @@ export default function Profile() {
       {/* Wallet + identity card */}
       <div className="mt-5 rounded-card bg-ink p-5 text-bg">
         <div className="flex items-center gap-4">
-          <img
-            src={avatarUrl(wallet)}
-            alt="Your avatar"
-            className="h-14 w-14 shrink-0 rounded-full bg-lime object-cover"
-          />
+          <label className="relative shrink-0 cursor-pointer">
+            <img
+              src={displayAvatar(avatar, wallet)}
+              alt="Your avatar"
+              className="h-14 w-14 rounded-full bg-lime object-cover"
+            />
+            <span className="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded-full bg-lime text-ink ring-2 ring-ink">
+              {uploadingAvatar ? (
+                <Loader2 size={12} className="animate-spin" />
+              ) : (
+                <Camera size={12} />
+              )}
+            </span>
+            <input type="file" accept="image/*" onChange={onAvatar} className="hidden" />
+          </label>
           <div className="min-w-0 flex-1">
             {editing ? (
               <div className="flex items-center gap-2">

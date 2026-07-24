@@ -25,7 +25,7 @@ import {
 import { getSession } from '../lib/store'
 import { addTicket } from '../lib/tickets'
 import { getAttendees } from '../lib/profile'
-import { avatarUrl, shortAddress } from '../lib/avatar'
+import { avatarUrl, displayAvatar, shortAddress } from '../lib/avatar'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
 import { paySession, getAddress } from '../lib/nimiq'
 
@@ -351,7 +351,7 @@ export default function SessionDetail() {
                   {attendees.slice(0, 10).map((a) => (
                     <img
                       key={a.wallet}
-                      src={avatarUrl(a.wallet)}
+                      src={displayAvatar(a.avatar, a.wallet)}
                       alt={a.name || shortAddress(a.wallet)}
                       title={a.name || shortAddress(a.wallet)}
                       className="h-9 w-9 rounded-full border-2 border-bg bg-lime object-cover"

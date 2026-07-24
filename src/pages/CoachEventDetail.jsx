@@ -1,21 +1,43 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Users, Calendar, MapPin, Loader2 } from 'lucide-react'
+import { ArrowLeft, Users, Calendar, MapPin, Loader2, ScanLine, Check, X } from 'lucide-react'
 import { getSession } from '../lib/store'
-import { getAttendees } from '../lib/profile'
-import { avatarUrl, shortAddress } from '../lib/avatar'
+import { getAttendees, checkinTicket } from '../lib/profile'
+import { displayAvatar, shortAddress } from '../lib/avatar'
 import { formatDate, formatTime } from '../lib/format'
+import QrScanner from '../components/QrScanner'
 
 export default function CoachEventDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [session, setSession] = useState(undefined)
   const [attendees, setAttendees] = useState([])
+  const [scanning, setScanning] = useState(false)
+  const [result, setResult] = useState(null)
+
+  const loadAttendees = () => getAttendees(id).then(setAttendees)
 
   useEffect(() => {
     getSession(id).then((s) => setSession(s ?? null))
-    getAttendees(id).then(setAttendees)
+    loadAttendees()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  const onScan = async (text) => {
+    setScanning(false)
+    const parts = String(text).split(':')
+    if (parts[0] !== 'SESION') {
+      setResult({ valid: false, reason: 'This is not a Sesión ticket.' })
+      return
+    }
+    if (parts[1] !== id) {
+      setResult({ valid: false, reason: 'This ticket is for another session.' })
+      return
+    }
+    const r = await checkinTicket(id, parts[2] || '')
+    setResult(r.valid ? r : { valid: false, reason: 'No booking matches this ticket.' })
+    loadAttendees()
+  }
 
   if (session === undefined) {
     return (
@@ -66,15 +88,20 @@ export default function CoachEventDetail() {
         </div>
       </div>
 
-      {/* Booking stats */}
+      {/* Bookings + scan */}
       <div className="mt-4 flex items-center justify-between rounded-card bg-ink px-5 py-4 text-bg">
         <span className="flex items-center gap-2 font-semibold">
-          <Users size={18} className="text-lime" /> Bookings
+          <Users size={18} className="text-lime" /> {session.booked}/{session.capacity} booked
         </span>
-        <span className="tnum font-display text-xl font-bold">
-          {session.booked}
-          <span className="text-bg/60">/{session.capacity}</span>
-        </span>
+        <button
+          onClick={() => {
+            setResult(null)
+            setScanning(true)
+          }}
+          className="flex items-center gap-2 rounded-full bg-lime px-4 py-2.5 text-sm font-semibold text-ink transition-transform active:scale-95"
+        >
+          <ScanLine size={18} /> Scan ticket
+        </button>
       </div>
 
       {/* Attendees */}
@@ -90,19 +117,74 @@ export default function CoachEventDetail() {
                 className="flex items-center gap-3 rounded-card border border-border bg-surface p-3"
               >
                 <img
-                  src={avatarUrl(a.wallet)}
+                  src={displayAvatar(a.avatar, a.wallet)}
                   alt=""
                   className="h-10 w-10 rounded-full bg-lime object-cover"
                 />
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold">{a.name || 'Guest'}</p>
                   <p className="tnum truncate text-xs text-ink-soft">{shortAddress(a.wallet)}</p>
                 </div>
+                {a.checked_in ? (
+                  <span className="flex items-center gap-1 rounded-full bg-success/15 px-2.5 py-1 text-xs font-semibold text-success">
+                    <Check size={13} /> Checked in
+                  </span>
+                ) : (
+                  <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-ink-soft">
+                    Booked
+                  </span>
+                )}
               </div>
             ))}
           </div>
         )}
       </div>
+
+      {/* Scanner */}
+      {scanning && <QrScanner onResult={onScan} onClose={() => setScanning(false)} />}
+
+      {/* Scan result */}
+      {result && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-5"
+          onClick={() => setResult(null)}
+        >
+          <div
+            className="w-full max-w-sm rounded-card bg-surface p-6 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {result.valid ? (
+              <>
+                <div
+                  className={`mx-auto grid h-16 w-16 place-items-center rounded-full ${
+                    result.already ? 'bg-coral/15 text-coral' : 'bg-success/15 text-success'
+                  }`}
+                >
+                  <Check size={32} />
+                </div>
+                <h2 className="mt-3 font-display text-2xl font-bold">
+                  {result.already ? 'Already checked in' : 'Checked in!'}
+                </h2>
+                <p className="text-sm text-ink-soft">{result.name || 'Guest'}</p>
+              </>
+            ) : (
+              <>
+                <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-destructive/15 text-destructive">
+                  <X size={32} />
+                </div>
+                <h2 className="mt-3 font-display text-2xl font-bold">Invalid ticket</h2>
+                <p className="text-sm text-ink-soft">{result.reason}</p>
+              </>
+            )}
+            <button
+              onClick={() => setResult(null)}
+              className="mt-5 w-full rounded-full bg-ink py-3 font-semibold text-bg"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

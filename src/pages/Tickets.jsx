@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { QRCodeSVG } from 'qrcode.react'
-import { Ticket as TicketIcon, Calendar, MapPin, QrCode, X, Check, Loader2 } from 'lucide-react'
+import { QRCodeCanvas } from 'qrcode.react'
+import { Ticket as TicketIcon, Calendar, MapPin, QrCode, X, Check, Loader2, Download } from 'lucide-react'
 import { getTickets } from '../lib/tickets'
 import { getSessions } from '../lib/store'
 import { getAddress } from '../lib/nimiq'
@@ -116,7 +116,8 @@ export default function Tickets() {
             <div className="my-5 border-t border-dashed border-border" />
 
             <div className="flex justify-center">
-              <QRCodeSVG
+              <QRCodeCanvas
+                id="ticket-qr"
                 value={`SESION:${active.session.id}:${active.code.slice(0, 24)}`}
                 size={190}
                 fgColor="#14161B"
@@ -127,6 +128,20 @@ export default function Tickets() {
               Ticket {active.code.slice(0, 10).toUpperCase()}
             </p>
             <p className="text-xs text-ink-soft">Show this QR at the door</p>
+
+            <button
+              onClick={() => {
+                const canvas = document.getElementById('ticket-qr')
+                if (!canvas) return
+                const link = document.createElement('a')
+                link.download = `sesion-ticket-${active.session.id}.png`
+                link.href = canvas.toDataURL('image/png')
+                link.click()
+              }}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3 font-semibold text-bg transition-transform active:scale-95"
+            >
+              <Download size={18} /> Download ticket
+            </button>
           </div>
         </div>
       )}
