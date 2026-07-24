@@ -15,7 +15,7 @@ export const SESSIONS = [
     id: 's1',
     title: 'Sunrise Vinyasa Flow',
     category: 'yoga',
-    priceNim: 6,
+    priceNim: 0.01,
     durationMin: 60,
     level: 'All levels',
     startsAt: '2026-07-25T08:00:00',
