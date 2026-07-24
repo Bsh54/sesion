@@ -1,14 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import {
-  Users,
-  ChevronRight,
-  Plus,
-  Loader2,
-  CalendarDays,
-  Coins,
-  ArrowLeft,
-} from 'lucide-react'
+import { Users, ChevronRight, Plus, Loader2, CalendarDays, Coins } from 'lucide-react'
 import { getCoachSessions } from '../lib/store'
 import { formatDate, formatTime } from '../lib/format'
 
@@ -36,14 +28,8 @@ export default function CoachEvents() {
 
   return (
     <div className="mx-auto max-w-2xl px-5 pb-28 pt-5">
-      <header className="flex items-center justify-between">
+      <header>
         <h1 className="font-display text-3xl font-extrabold tracking-tight">Coach</h1>
-        <button
-          onClick={() => navigate('/app')}
-          className="flex items-center gap-1 text-sm font-semibold text-ink-soft"
-        >
-          <ArrowLeft size={16} /> Client view
-        </button>
       </header>
 
       {/* Stats */}
