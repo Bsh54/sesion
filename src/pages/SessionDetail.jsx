@@ -23,6 +23,7 @@ import {
   AGENDA,
 } from '../data/sessions'
 import { getSession } from '../lib/store'
+import { addTicket } from '../lib/tickets'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
 import { paySession } from '../lib/nimiq'
 
@@ -92,6 +93,7 @@ export default function SessionDetail() {
         ref: `SESION:${session.id}`,
       })
       if (navigator.vibrate) navigator.vibrate(10)
+      addTicket({ sessionId: session.id, code: res.receipt })
       setTicket({ code: res.receipt })
       setStatus('booked')
     } catch (e) {
@@ -410,10 +412,10 @@ export default function SessionDetail() {
             <p className="text-xs text-ink-soft">Show this QR at the door</p>
 
             <button
-              onClick={() => navigate('/app')}
+              onClick={() => navigate('/tickets')}
               className="mt-5 w-full rounded-full bg-ink py-3 font-semibold text-bg transition-transform active:scale-95"
             >
-              Done
+              View my tickets
             </button>
           </div>
         </div>

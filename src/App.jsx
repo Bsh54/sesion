@@ -2,6 +2,7 @@ import { Routes, Route, useLocation } from 'react-router-dom'
 import Landing from './pages/Landing'
 import Home from './pages/Home'
 import SessionDetail from './pages/SessionDetail'
+import Tickets from './pages/Tickets'
 import Placeholder from './pages/Placeholder'
 import BottomNav from './components/BottomNav'
 
@@ -16,7 +17,7 @@ export default function App() {
         <Route path="/app" element={<Home />} />
         <Route path="/session/:id" element={<SessionDetail />} />
         <Route path="/search" element={<Placeholder title="Search" />} />
-        <Route path="/tickets" element={<Placeholder title="My tickets" />} />
+        <Route path="/tickets" element={<Tickets />} />
         <Route path="/profile" element={<Placeholder title="Profile" />} />
         <Route path="*" element={<Placeholder title="Not found" />} />
       </Routes>
