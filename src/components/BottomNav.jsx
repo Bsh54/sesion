@@ -1,9 +1,8 @@
 import { NavLink } from 'react-router-dom'
-import { Compass, Search, Ticket, User } from 'lucide-react'
+import { Compass, Ticket, User } from 'lucide-react'
 
 const ITEMS = [
   { to: '/app', label: 'Discover', icon: Compass, end: true },
-  { to: '/search', label: 'Search', icon: Search },
   { to: '/tickets', label: 'Tickets', icon: Ticket },
   { to: '/profile', label: 'Profile', icon: User },
 ]

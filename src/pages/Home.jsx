@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, MapPin, ShieldCheck } from 'lucide-react'
+import { Search, MapPin } from 'lucide-react'
 import CategoryChips from '../components/CategoryChips'
 import SessionCard from '../components/SessionCard'
 import { getSessions } from '../lib/store'
@@ -48,14 +48,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      {/* Trust banner */}
-      <div className="mt-6 flex items-center gap-3 rounded-card bg-ink px-5 py-4 text-bg">
-        <ShieldCheck size={22} className="shrink-0 text-lime" />
-        <p className="text-sm font-medium">
-          Pay coaches directly in NIM. No card, no borders, no platform fee.
-        </p>
-      </div>
     </div>
   )
 }
