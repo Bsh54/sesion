@@ -25,7 +25,7 @@ import {
 import { getSession } from '../lib/store'
 import { addTicket } from '../lib/tickets'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
-import { paySession } from '../lib/nimiq'
+import { paySession, getAddress } from '../lib/nimiq'
 
 function Stat({ icon: Icon, label, value }) {
   return (
@@ -93,7 +93,14 @@ export default function SessionDetail() {
         ref: `SESION:${session.id}`,
       })
       if (navigator.vibrate) navigator.vibrate(10)
-      addTicket({ sessionId: session.id, code: res.receipt })
+      const wallet = await getAddress()
+      if (wallet) {
+        try {
+          await addTicket({ wallet, sessionId: session.id, code: res.receipt })
+        } catch {
+          /* payment succeeded; ticket save is best-effort */
+        }
+      }
       setTicket({ code: res.receipt })
       setStatus('booked')
     } catch (e) {

@@ -1,15 +1,31 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
-import { Ticket as TicketIcon, Calendar, MapPin, QrCode, X, Check } from 'lucide-react'
+import { Ticket as TicketIcon, Calendar, MapPin, QrCode, X, Check, Loader2 } from 'lucide-react'
 import { getTickets } from '../lib/tickets'
 import { getSession } from '../lib/store'
+import { getAddress } from '../lib/nimiq'
 import { formatDate, formatTime } from '../lib/format'
 
 export default function Tickets() {
   const navigate = useNavigate()
-  const [tickets] = useState(() => getTickets())
+  const [tickets, setTickets] = useState(null) // null = loading
   const [active, setActive] = useState(null)
+
+  useEffect(() => {
+    ;(async () => {
+      const wallet = await getAddress()
+      setTickets(await getTickets(wallet))
+    })()
+  }, [])
+
+  if (tickets === null) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center">
+        <Loader2 size={28} className="animate-spin text-ink-soft" />
+      </div>
+    )
+  }
 
   const items = tickets
     .map((t) => ({ ...t, session: getSession(t.sessionId) }))

@@ -1,32 +1,25 @@
-// Booked tickets, stored locally on the device.
-// A ticket is created when a session payment succeeds.
+// Booked tickets, stored server-side (keyed by the user's Nimiq wallet address).
+const API = import.meta.env.VITE_API_URL || 'https://vps122470.serveur-vps.net/sesion-api'
 
-const KEY = 'sesion.tickets.v1'
-
-function load() {
+// Fetch every ticket booked by a wallet.
+export async function getTickets(wallet) {
+  if (!wallet) return []
   try {
-    const raw = localStorage.getItem(KEY)
-    if (raw) return JSON.parse(raw)
+    const res = await fetch(`${API}/tickets?wallet=${encodeURIComponent(wallet)}`)
+    if (!res.ok) return []
+    return await res.json()
   } catch {
-    /* ignore */
-  }
-  return []
-}
-
-function persist(list) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(list))
-  } catch {
-    /* ignore */
+    return []
   }
 }
 
-export function getTickets() {
-  return load()
-}
-
-export function addTicket({ sessionId, code }) {
-  const ticket = { id: 't' + Date.now(), sessionId, code, createdAt: Date.now() }
-  persist([ticket, ...load()])
-  return ticket
+// Persist a ticket after a successful payment.
+export async function addTicket({ wallet, sessionId, code }) {
+  const res = await fetch(`${API}/tickets`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ wallet, sessionId, code }),
+  })
+  if (!res.ok) throw new Error('Could not save ticket')
+  return res.json()
 }
