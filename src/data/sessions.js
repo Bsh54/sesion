@@ -1,5 +1,5 @@
-// Mock catalog used until the Supabase backend is wired up.
-// Photos use Unsplash source URLs (energetic, real movement).
+// Mock catalog used until a shared backend is wired up.
+// Photos use Unsplash URLs (energetic, real movement).
 
 export const CATEGORIES = [
   { id: 'yoga', label: 'Yoga', icon: 'Flower2' },
@@ -22,6 +22,8 @@ export const SESSIONS = [
     booked: 10,
     image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=70',
     coach: { name: 'Ana Ribeiro', rating: 4.9, avatar: 'https://i.pravatar.cc/120?img=47', wallet: 'NQ00 DEMO COACH' },
+    description:
+      'Greet the day with a flowing vinyasa practice on the sand. All levels welcome — bring a mat and a bottle of water.',
   },
   {
     id: 's2',
@@ -34,6 +36,8 @@ export const SESSIONS = [
     booked: 6,
     image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=800&q=70',
     coach: { name: 'Marcus Lee', rating: 4.8, avatar: 'https://i.pravatar.cc/120?img=12', wallet: 'NQ00 DEMO COACH' },
+    description:
+      'Learn footwork, guard and combos in a high-energy beginner class. Gloves provided. Come ready to sweat.',
   },
   {
     id: 's3',
@@ -46,6 +50,8 @@ export const SESSIONS = [
     booked: 14,
     image: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=800&q=70',
     coach: { name: 'Joy Adeyemi', rating: 5.0, avatar: 'https://i.pravatar.cc/120?img=32', wallet: 'NQ00 DEMO COACH' },
+    description:
+      'Feel the rhythm in a joyful Afro house session. No experience needed — just energy and a smile.',
   },
   {
     id: 's4',
@@ -58,5 +64,63 @@ export const SESSIONS = [
     booked: 9,
     image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=70',
     coach: { name: 'Sofia Marin', rating: 4.7, avatar: 'https://i.pravatar.cc/120?img=45', wallet: 'NQ00 DEMO COACH' },
+    description:
+      'Build deep core strength and mobility on the reformer. Small group, personal corrections guaranteed.',
+  },
+  {
+    id: 's5',
+    title: 'Kettlebell Strength Circuit',
+    category: 'strength',
+    priceNim: 7,
+    startsAt: '2026-07-27T17:00:00',
+    location: 'Iron Yard',
+    capacity: 14,
+    booked: 5,
+    image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=70',
+    coach: { name: 'Diego Torres', rating: 4.8, avatar: 'https://i.pravatar.cc/120?img=15', wallet: 'NQ00 DEMO COACH' },
+    description:
+      'A full-body kettlebell circuit that builds power and conditioning. Scalable for every level.',
+  },
+  {
+    id: 's6',
+    title: 'Sound Bath & Breathwork',
+    category: 'wellness',
+    priceNim: 5,
+    startsAt: '2026-07-28T20:00:00',
+    location: 'Lotus Loft',
+    capacity: 18,
+    booked: 7,
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=70',
+    coach: { name: 'Maya Chen', rating: 5.0, avatar: 'https://i.pravatar.cc/120?img=20', wallet: 'NQ00 DEMO COACH' },
+    description:
+      'Unwind with guided breathwork and healing sound frequencies. Leave calm, clear and recharged.',
+  },
+  {
+    id: 's7',
+    title: 'Rooftop HIIT Blast',
+    category: 'strength',
+    priceNim: 6,
+    startsAt: '2026-07-28T07:00:00',
+    location: 'Skyline Terrace',
+    capacity: 16,
+    booked: 15,
+    image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=70',
+    coach: { name: 'Leila Haddad', rating: 4.9, avatar: 'https://i.pravatar.cc/120?img=25', wallet: 'NQ00 DEMO COACH' },
+    description:
+      'Twenty minutes of high-intensity intervals with a skyline view. Fast, fun and finished before work.',
+  },
+  {
+    id: 's8',
+    title: 'Hatha Yoga for Beginners',
+    category: 'yoga',
+    priceNim: 5,
+    startsAt: '2026-07-29T10:00:00',
+    location: 'Green Park Studio',
+    capacity: 12,
+    booked: 4,
+    image: 'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=800&q=70',
+    coach: { name: 'Priya Nair', rating: 4.7, avatar: 'https://i.pravatar.cc/120?img=41', wallet: 'NQ00 DEMO COACH' },
+    description:
+      'A gentle, slow-paced introduction to yoga postures and breathing. Perfect if you are just starting out.',
   },
 ]
