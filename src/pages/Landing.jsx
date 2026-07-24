@@ -50,16 +50,11 @@ export default function Landing() {
       </header>
 
       {/* 1. HERO — search is the CTA */}
-      <section className="mx-auto max-w-5xl px-5 pt-8 pb-10 text-center">
-        <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-lime px-3 py-1 text-xs font-semibold text-ink">
-          <span className="h-2 w-2 rounded-full bg-ink" /> Fitness &amp; wellness, paid in NIM
-        </p>
-        <h1 className="font-display text-[clamp(2.75rem,11vw,6rem)] font-extrabold uppercase leading-[0.92] tracking-tight">
-          Find your next
-          <br />
-          <span className="bg-lime px-2">session.</span>
+      <section className="mx-auto max-w-5xl px-5 pt-2 pb-8 text-center">
+        <h1 className="font-display text-[clamp(2.25rem,8vw,4rem)] font-extrabold uppercase leading-[0.95] tracking-tight">
+          Find your next <span className="bg-lime px-2">session.</span>
         </h1>
-        <p className="mx-auto mt-5 max-w-md text-lg text-ink-soft">
+        <p className="mx-auto mt-4 max-w-md text-base text-ink-soft">
           Book local coaches for yoga, boxing, dance and more. Pay directly in NIM — instant,
           no card, no borders.
         </p>
@@ -146,7 +141,7 @@ export default function Landing() {
 
       {/* 4. TRUST / SAFETY */}
       <section className="border-y border-border bg-surface">
-        <div className="mx-auto max-w-5xl px-5 py-12">
+        <div className="mx-auto max-w-5xl px-5 py-10">
           <h2 className="mb-8 text-center font-display text-3xl font-extrabold uppercase tracking-tight">
             Safe by design
           </h2>
@@ -169,7 +164,7 @@ export default function Landing() {
       </section>
 
       {/* 5. CTA — become a host/seller */}
-      <section className="mx-auto max-w-5xl px-5 py-14">
+      <section className="mx-auto max-w-5xl px-5 py-10">
         <div className="rounded-card bg-ink px-6 py-12 text-center text-bg sm:px-10">
           <h2 className="font-display text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">
             Coaches, get paid <span className="text-lime">anywhere.</span>
