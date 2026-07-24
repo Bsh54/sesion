@@ -1,0 +1,175 @@
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  User,
+  Copy,
+  Check,
+  Ticket,
+  CalendarClock,
+  Sparkles,
+  ChevronRight,
+  Loader2,
+  Wallet,
+} from 'lucide-react'
+import { getAddress } from '../lib/nimiq'
+import { getTickets } from '../lib/tickets'
+import { getSession } from '../lib/store'
+import { CATEGORIES } from '../data/sessions'
+import { formatDate, formatTime } from '../lib/format'
+
+function Stat({ icon: Icon, label, value }) {
+  return (
+    <div className="flex-1 rounded-card border border-border bg-surface p-3 text-center">
+      <Icon size={18} className="mx-auto text-ink-soft" strokeWidth={1.75} />
+      <p className="mt-1 font-display text-xl font-bold leading-none">{value}</p>
+      <p className="text-xs text-ink-soft">{label}</p>
+    </div>
+  )
+}
+
+export default function Profile() {
+  const navigate = useNavigate()
+  const [wallet, setWallet] = useState(undefined) // undefined = loading, null = no wallet
+  const [tickets, setTickets] = useState([])
+  const [copied, setCopied] = useState(false)
+
+  useEffect(() => {
+    ;(async () => {
+      const w = await getAddress()
+      setWallet(w ?? null)
+      if (w) setTickets(await getTickets(w))
+    })()
+  }, [])
+
+  if (wallet === undefined) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center">
+        <Loader2 size={28} className="animate-spin text-ink-soft" />
+      </div>
+    )
+  }
+
+  if (!wallet) {
+    return (
+      <div className="mx-auto flex min-h-[80vh] max-w-2xl flex-col items-center justify-center px-5 text-center">
+        <div className="grid h-16 w-16 place-items-center rounded-full bg-muted">
+          <Wallet size={28} className="text-ink-soft" strokeWidth={1.75} />
+        </div>
+        <h2 className="mt-4 font-display text-2xl font-bold">Connect your wallet</h2>
+        <p className="mt-1 max-w-xs text-sm text-ink-soft">
+          Open Sesión inside Nimiq Pay to see your profile and bookings.
+        </p>
+      </div>
+    )
+  }
+
+  const booked = tickets
+    .map((t) => ({ ...t, session: getSession(t.sessionId) }))
+    .filter((x) => x.session)
+
+  const now = Date.now()
+  const upcoming = booked
+    .filter((b) => new Date(b.session.startsAt).getTime() >= now)
+    .sort((a, b) => new Date(a.session.startsAt) - new Date(b.session.startsAt))
+
+  // Favourite category = most frequent among booked sessions.
+  const counts = {}
+  booked.forEach((b) => (counts[b.session.category] = (counts[b.session.category] || 0) + 1))
+  const topId = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0]
+  const topCategory = CATEGORIES.find((c) => c.id === topId)?.label ?? '—'
+
+  const shortAddr = `${wallet.slice(0, 14)}…${wallet.slice(-4)}`
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(wallet)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      /* ignore */
+    }
+  }
+
+  return (
+    <div className="mx-auto max-w-2xl px-5 pb-28 pt-6">
+      <h1 className="font-display text-3xl font-extrabold tracking-tight">Profile</h1>
+
+      {/* Wallet card */}
+      <div className="mt-5 flex items-center gap-4 rounded-card bg-ink p-5 text-bg">
+        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-lime text-ink">
+          <User size={26} />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-bg/60">Your wallet</p>
+          <p className="tnum truncate font-display text-lg font-bold">{shortAddr}</p>
+        </div>
+        <button
+          onClick={copy}
+          aria-label="Copy address"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-bg/10 text-bg transition-transform active:scale-95"
+        >
+          {copied ? <Check size={18} className="text-lime" /> : <Copy size={18} />}
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="mt-4 flex gap-3">
+        <Stat icon={Ticket} label="Booked" value={booked.length} />
+        <Stat icon={CalendarClock} label="Upcoming" value={upcoming.length} />
+        <Stat icon={Sparkles} label="Top" value={topCategory} />
+      </div>
+
+      {/* Upcoming sessions */}
+      <div className="mt-6">
+        <h2 className="mb-3 font-display text-xl font-bold">Upcoming sessions</h2>
+        {upcoming.length === 0 ? (
+          <div className="rounded-card border border-border p-5 text-center">
+            <p className="text-sm text-ink-soft">No upcoming sessions yet.</p>
+            <button
+              onClick={() => navigate('/app')}
+              className="mt-3 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-bg transition-transform active:scale-95"
+            >
+              Explore sessions
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {upcoming.map((b) => (
+              <button
+                key={b.id}
+                onClick={() => navigate(`/session/${b.session.id}`)}
+                className="flex w-full items-center gap-4 rounded-card border border-border bg-surface p-3 text-left transition-transform active:scale-[.99]"
+              >
+                <img
+                  src={b.session.image}
+                  alt=""
+                  className="h-16 w-16 shrink-0 rounded-2xl object-cover"
+                />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-display text-lg font-bold leading-tight">
+                    {b.session.title}
+                  </p>
+                  <p className="tnum mt-0.5 text-sm text-ink-soft">
+                    {formatDate(b.session.startsAt)} · {formatTime(b.session.startsAt)}
+                  </p>
+                </div>
+                <ChevronRight size={20} className="shrink-0 text-ink-soft" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Link to tickets */}
+      <button
+        onClick={() => navigate('/tickets')}
+        className="mt-4 flex w-full items-center justify-between rounded-card border border-border bg-surface px-5 py-4 text-left transition-transform active:scale-[.99]"
+      >
+        <span className="flex items-center gap-3 font-semibold">
+          <Ticket size={20} /> My tickets
+        </span>
+        <ChevronRight size={20} className="text-ink-soft" />
+      </button>
+    </div>
+  )
+}
