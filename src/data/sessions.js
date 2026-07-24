@@ -147,3 +147,28 @@ export const GOOD_TO_KNOW = [
   'Bring water and a towel.',
   'Free cancellation up to 2 hours before.',
 ]
+
+// What to bring / amenities, shown on the detail page.
+export const AMENITIES = ['Mat provided', 'Changing room', 'Water refill', 'Free parking']
+
+// Sample reviews (social proof) — shared across sessions for the demo.
+export const SAMPLE_REVIEWS = [
+  {
+    name: 'Camila S.',
+    avatar: 'https://i.pravatar.cc/80?img=48',
+    rating: 5,
+    text: 'Amazing energy and clear guidance. I left feeling incredible — booking again next week.',
+  },
+  {
+    name: 'Tom B.',
+    avatar: 'https://i.pravatar.cc/80?img=13',
+    rating: 5,
+    text: 'Perfect for beginners. Welcoming, well paced, and the coach really pays attention to form.',
+  },
+  {
+    name: 'Aisha K.',
+    avatar: 'https://i.pravatar.cc/80?img=29',
+    rating: 4,
+    text: 'Solid session and a great vibe. Arrive early though — it fills up fast!',
+  },
+]

@@ -11,10 +11,11 @@ import {
   Gauge,
   Users,
   BadgeCheck,
+  ExternalLink,
   Check,
   Loader2,
 } from 'lucide-react'
-import { CATEGORIES, GOOD_TO_KNOW } from '../data/sessions'
+import { CATEGORIES, GOOD_TO_KNOW, AMENITIES, SAMPLE_REVIEWS } from '../data/sessions'
 import { getSession } from '../lib/store'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
 import { paySession } from '../lib/nimiq'
@@ -26,6 +27,20 @@ function Stat({ icon: Icon, label, value }) {
       <p className="mt-1 font-display text-lg font-bold leading-none">{value}</p>
       <p className="text-xs text-ink-soft">{label}</p>
     </div>
+  )
+}
+
+function Stars({ rating }) {
+  return (
+    <span className="flex items-center gap-0.5">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star
+          key={i}
+          size={14}
+          className={i < Math.round(rating) ? 'fill-lime text-lime' : 'text-border'}
+        />
+      ))}
+    </span>
   )
 }
 
@@ -53,6 +68,8 @@ export default function SessionDetail() {
 
   const category = CATEGORIES.find((c) => c.id === session.category)
   const { left, scarce } = spotsInfo(session)
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(session.location)}`
+  const bio = `${session.coach.name} is a verified ${category?.label.toLowerCase() ?? 'fitness'} coach with ${session.coach.sessions} sessions hosted and a ${session.coach.rating}-star rating from the community.`
 
   const share = async () => {
     const url = window.location.href
@@ -124,33 +141,74 @@ export default function SessionDetail() {
           <Stat icon={Users} label="Spots left" value={left} />
         </div>
 
-        {/* When & where */}
-        <div className="mt-5 space-y-3 rounded-card border border-border p-4">
-          <div className="flex items-center gap-3">
-            <Calendar size={18} className="text-ink-soft" />
-            <span className="tnum text-sm font-medium">
-              {formatDate(session.startsAt)} · {formatTime(session.startsAt)}
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <MapPin size={18} className="text-ink-soft" />
-            <span className="text-sm font-medium">{session.location}</span>
+        {/* When */}
+        <div className="mt-5 flex items-center gap-3 rounded-card border border-border p-4">
+          <Calendar size={18} className="text-ink-soft" />
+          <span className="tnum text-sm font-medium">
+            {formatDate(session.startsAt)} · {formatTime(session.startsAt)} · {session.durationMin}{' '}
+            min
+          </span>
+        </div>
+
+        {/* Where */}
+        <div className="mt-4 rounded-card border border-border p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <MapPin size={18} className="text-ink-soft" />
+              <div>
+                <p className="text-sm font-semibold">{session.location}</p>
+                <p className="text-xs text-ink-soft">Meet at the main entrance — signage on site.</p>
+              </div>
+            </div>
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex shrink-0 items-center gap-1 text-sm font-semibold text-ink"
+            >
+              Map <ExternalLink size={14} />
+            </a>
           </div>
         </div>
 
         {/* Coach */}
-        <div className="mt-5 flex items-center gap-3 rounded-card border border-border p-4">
-          <img src={session.coach.avatar} alt="" className="h-12 w-12 rounded-full object-cover" />
-          <div className="flex-1">
-            <p className="flex items-center gap-1 font-semibold">
-              {session.coach.name}
-              <BadgeCheck size={16} className="text-lime" />
-            </p>
-            <p className="text-sm text-ink-soft">{session.coach.sessions} sessions hosted</p>
+        <div className="mt-6">
+          <h2 className="mb-3 font-display text-xl font-bold">Your coach</h2>
+          <div className="rounded-card border border-border p-4">
+            <div className="flex items-center gap-3">
+              <img
+                src={session.coach.avatar}
+                alt=""
+                className="h-12 w-12 rounded-full object-cover"
+              />
+              <div className="flex-1">
+                <p className="flex items-center gap-1 font-semibold">
+                  {session.coach.name}
+                  <BadgeCheck size={16} className="text-lime" />
+                </p>
+                <p className="text-sm text-ink-soft">{session.coach.sessions} sessions hosted</p>
+              </div>
+              <span className="flex items-center gap-1 font-semibold">
+                <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
+              </span>
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-ink-soft">{bio}</p>
           </div>
-          <span className="flex items-center gap-1 font-semibold">
-            <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
-          </span>
+        </div>
+
+        {/* What to bring */}
+        <div className="mt-6">
+          <h2 className="font-display text-xl font-bold">What&apos;s included</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {AMENITIES.map((a) => (
+              <span
+                key={a}
+                className="rounded-full bg-muted px-3 py-1.5 text-sm font-medium text-ink"
+              >
+                {a}
+              </span>
+            ))}
+          </div>
         </div>
 
         {/* Who's coming */}
@@ -182,6 +240,31 @@ export default function SessionDetail() {
         <div className="mt-6">
           <h2 className="font-display text-xl font-bold">About this session</h2>
           <p className="mt-2 leading-relaxed text-ink-soft">{session.description}</p>
+        </div>
+
+        {/* Reviews */}
+        <div className="mt-6">
+          <div className="flex items-center justify-between">
+            <h2 className="font-display text-xl font-bold">Reviews</h2>
+            <span className="flex items-center gap-1.5 text-sm font-semibold">
+              <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
+              <span className="font-medium text-ink-soft">· {session.coach.sessions} sessions</span>
+            </span>
+          </div>
+          <div className="mt-3 space-y-3">
+            {SAMPLE_REVIEWS.map((r) => (
+              <div key={r.name} className="rounded-card border border-border p-4">
+                <div className="flex items-center gap-3">
+                  <img src={r.avatar} alt="" className="h-9 w-9 rounded-full object-cover" />
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold">{r.name}</p>
+                    <Stars rating={r.rating} />
+                  </div>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{r.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Good to know */}
