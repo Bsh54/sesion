@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { ShieldCheck, Globe2, Zap, Wallet, ArrowRight, Star } from 'lucide-react'
+import { ShieldCheck, Globe2, Zap, Wallet, ArrowRight } from 'lucide-react'
 import { SESSIONS } from '../data/sessions'
 import SessionCard from '../components/SessionCard'
 
@@ -12,6 +12,16 @@ const TRUST = [
   { icon: Zap, title: 'Instant', text: 'Settlement in seconds, not days.' },
   { icon: Wallet, title: 'No card, no KYC', text: 'Just your Nimiq wallet.' },
 ]
+
+// Repeated section title with a lime marker for visual coherence.
+function SectionTitle({ children }) {
+  return (
+    <div>
+      <span className="mb-3 block h-1.5 w-10 rounded-full bg-lime" />
+      <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight">{children}</h2>
+    </div>
+  )
+}
 
 export default function Landing() {
   const navigate = useNavigate()
@@ -38,16 +48,16 @@ export default function Landing() {
       </header>
 
       {/* 1. HERO */}
-      <section className="mx-auto max-w-5xl px-5 pt-2 pb-8 text-center">
-        <h1 className="font-display text-[clamp(2.25rem,8vw,4rem)] font-extrabold uppercase leading-[0.95] tracking-tight">
+      <section className="mx-auto max-w-5xl px-5 pt-6 pb-12">
+        <h1 className="max-w-2xl font-display text-[clamp(2.5rem,9vw,4.5rem)] font-extrabold uppercase leading-[0.95] tracking-tight">
           Find your next <span className="bg-lime px-2">session.</span>
         </h1>
-        <p className="mx-auto mt-4 max-w-md text-base text-ink-soft">
+        <p className="mt-4 max-w-md text-base text-ink-soft">
           Book local coaches for yoga, boxing, dance and more. Pay directly in NIM — instant,
           no card, no borders.
         </p>
 
-        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="mt-7 flex flex-col gap-3 sm:flex-row">
           <button
             onClick={() => navigate('/app')}
             className="flex items-center justify-center gap-2 rounded-full bg-ink px-7 py-4 text-base font-semibold text-bg shadow-float transition-transform active:scale-95"
@@ -64,14 +74,12 @@ export default function Landing() {
       </section>
 
       {/* 2. FEATURED LISTINGS */}
-      <section className="mx-auto max-w-5xl px-5 py-8">
-        <div className="mb-5 flex items-end justify-between">
-          <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight">
-            Featured this week
-          </h2>
+      <section className="mx-auto max-w-5xl px-5 py-12">
+        <div className="mb-6 flex items-end justify-between">
+          <SectionTitle>Featured this week</SectionTitle>
           <button
             onClick={() => navigate('/app')}
-            className="flex items-center gap-1 text-sm font-semibold text-ink"
+            className="flex shrink-0 items-center gap-1 text-sm font-semibold text-ink"
           >
             See all <ArrowRight size={16} />
           </button>
@@ -85,41 +93,37 @@ export default function Landing() {
 
       {/* 3. TRUST / SAFETY */}
       <section className="border-y border-border bg-surface">
-        <div className="mx-auto max-w-5xl px-5 py-10">
-          <h2 className="mb-8 text-center font-display text-3xl font-extrabold uppercase tracking-tight">
-            Safe by design
-          </h2>
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <div className="mx-auto max-w-5xl px-5 py-12">
+          <div className="mb-6">
+            <SectionTitle>Safe by design</SectionTitle>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {TRUST.map(({ icon: Icon, title, text }) => (
-              <div key={title} className="text-center">
-                <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-success/10 text-success">
-                  <Icon size={24} strokeWidth={1.75} />
+              <div key={title} className="rounded-card border border-border p-5">
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-lime text-ink">
+                  <Icon size={22} strokeWidth={1.75} />
                 </span>
                 <h3 className="mt-3 font-display text-lg font-bold">{title}</h3>
                 <p className="text-sm text-ink-soft">{text}</p>
               </div>
             ))}
           </div>
-          <p className="mt-8 flex items-center justify-center gap-2 text-sm font-medium text-ink-soft">
-            <Star size={15} className="fill-lime text-lime" /> Trusted by independent coaches
-            worldwide
-          </p>
         </div>
       </section>
 
       {/* 4. CTA — become a host/seller */}
-      <section className="mx-auto max-w-5xl px-5 py-10">
-        <div className="rounded-card bg-ink px-6 py-12 text-center text-bg sm:px-10">
-          <h2 className="font-display text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">
+      <section className="mx-auto max-w-5xl px-5 py-12">
+        <div className="rounded-card bg-ink px-6 py-12 sm:px-12">
+          <h2 className="max-w-2xl font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-bg">
             Coaches, get paid <span className="text-lime">anywhere.</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-lg text-lg text-bg/70">
+          <p className="mt-4 max-w-lg text-lg text-bg/70">
             No terminal, no bank, no platform cut. Create a session, share your link, and NIM
             lands straight in your wallet.
           </p>
           <button
             onClick={() => navigate('/create')}
-            className="mx-auto mt-7 flex items-center gap-2 rounded-full bg-lime px-7 py-4 text-base font-semibold text-ink transition-transform active:scale-95"
+            className="mt-7 flex items-center gap-2 rounded-full bg-lime px-7 py-4 text-base font-semibold text-ink transition-transform active:scale-95"
           >
             Create your first session <ArrowRight size={20} />
           </button>
