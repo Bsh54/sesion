@@ -54,8 +54,8 @@ export default function Landing() {
 
           {/* Centered hero content */}
           <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-5 pb-16 text-center sm:min-h-[76vh]">
-            <h1 className="font-display text-[clamp(2.75rem,10vw,5.5rem)] font-extrabold uppercase leading-[0.92] tracking-tight text-bg">
-              Find your next <span className="bg-lime px-2 text-ink">session.</span>
+            <h1 className="font-display text-[clamp(2.5rem,9vw,5rem)] font-extrabold uppercase leading-[1] tracking-tight text-bg">
+              Find your next <span className="text-lime">session.</span>
             </h1>
             <p className="mx-auto mt-5 max-w-md text-lg text-bg/85">
               Book local coaches for yoga, boxing, dance and more. Pay directly in NIM — instant,
