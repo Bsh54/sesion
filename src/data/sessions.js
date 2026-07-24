@@ -151,6 +151,30 @@ export const GOOD_TO_KNOW = [
 // What to bring / amenities, shown on the detail page.
 export const AMENITIES = ['Mat provided', 'Changing room', 'Water refill', 'Free parking']
 
+// Focus areas per category (shown as tags on the detail page).
+export const FOCUS = {
+  yoga: ['Flexibility', 'Balance', 'Breath'],
+  boxing: ['Cardio', 'Strength', 'Agility'],
+  dance: ['Cardio', 'Coordination', 'Fun'],
+  pilates: ['Core', 'Mobility', 'Posture'],
+  strength: ['Strength', 'Power', 'Endurance'],
+  wellness: ['Relaxation', 'Breath', 'Recovery'],
+}
+
+// Intensity derived from the session level.
+export const INTENSITY = {
+  Beginner: 'Low',
+  'All levels': 'Moderate',
+  Intermediate: 'High',
+}
+
+// Generic session flow shown under "What to expect".
+export const AGENDA = [
+  { phase: 'Warm-up', detail: 'Gentle mobilisation to prepare your body.' },
+  { phase: 'Main set', detail: 'The core of the session, guided step by step.' },
+  { phase: 'Cool-down', detail: 'Stretch and breathe to recover and finish.' },
+]
+
 // Sample reviews (social proof) — shared across sessions for the demo.
 export const SAMPLE_REVIEWS = [
   {

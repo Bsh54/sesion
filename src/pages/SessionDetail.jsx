@@ -13,7 +13,15 @@ import {
   Check,
   Loader2,
 } from 'lucide-react'
-import { CATEGORIES, GOOD_TO_KNOW, AMENITIES, SAMPLE_REVIEWS } from '../data/sessions'
+import {
+  CATEGORIES,
+  GOOD_TO_KNOW,
+  AMENITIES,
+  SAMPLE_REVIEWS,
+  FOCUS,
+  INTENSITY,
+  AGENDA,
+} from '../data/sessions'
 import { getSession } from '../lib/store'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
 import { paySession } from '../lib/nimiq'
@@ -230,6 +238,52 @@ export default function SessionDetail() {
               </div>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">{bio}</p>
             </div>
+          </div>
+
+          {/* Details */}
+          <div>
+            <SectionTitle>Details</SectionTitle>
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { label: 'Class size', value: `${session.capacity} people` },
+                { label: 'Language', value: 'English' },
+                { label: 'Intensity', value: INTENSITY[session.level] ?? 'Moderate' },
+                { label: 'Category', value: category?.label ?? '—' },
+              ].map((f) => (
+                <div key={f.label} className="rounded-card border border-border p-3">
+                  <p className="text-xs text-ink-soft">{f.label}</p>
+                  <p className="mt-0.5 font-display text-lg font-bold leading-tight">{f.value}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {(FOCUS[session.category] ?? []).map((f) => (
+                <span
+                  key={f}
+                  className="rounded-full bg-lime/25 px-3 py-1 text-sm font-semibold text-ink"
+                >
+                  {f}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* What to expect */}
+          <div>
+            <SectionTitle>What to expect</SectionTitle>
+            <ol className="mt-3 space-y-3">
+              {AGENDA.map((a, i) => (
+                <li key={a.phase} className="flex gap-3">
+                  <span className="tnum grid h-7 w-7 shrink-0 place-items-center rounded-full bg-lime text-sm font-bold text-ink">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="font-semibold leading-tight">{a.phase}</p>
+                    <p className="text-sm text-ink-soft">{a.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
 
           {/* What's included */}
