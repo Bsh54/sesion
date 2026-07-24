@@ -74,12 +74,20 @@ export default function Landing() {
               Book local coaches for yoga, boxing, dance and more. Pay directly in NIM — instant,
               no card, no borders.
             </p>
-            <button
-              onClick={() => navigate('/app')}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-lime px-9 py-4 text-base font-semibold text-ink shadow-float transition-transform active:scale-95"
-            >
-              Explore sessions <ArrowRight size={20} />
-            </button>
+            <div className="mt-8 flex flex-col items-center gap-3">
+              <button
+                onClick={() => navigate('/app')}
+                className="inline-flex items-center gap-2 rounded-full bg-lime px-9 py-4 text-base font-semibold text-ink shadow-float transition-transform active:scale-95"
+              >
+                Explore sessions <ArrowRight size={20} />
+              </button>
+              <button
+                onClick={() => navigate('/coach')}
+                className="inline-flex items-center gap-2 rounded-full border border-bg/40 px-9 py-4 text-base font-semibold text-bg transition-transform active:scale-95"
+              >
+                Access coach space
+              </button>
+            </div>
           </div>
         </div>
       </section>
