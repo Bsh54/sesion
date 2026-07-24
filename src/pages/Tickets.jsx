@@ -5,6 +5,7 @@ import { Ticket as TicketIcon, Calendar, MapPin, QrCode, X, Check, Loader2, Down
 import { getTickets } from '../lib/tickets'
 import { getSessions } from '../lib/store'
 import { getAddress } from '../lib/nimiq'
+import { saveCanvasImage } from '../lib/download'
 import { formatDate, formatTime } from '../lib/format'
 
 export default function Tickets() {
@@ -130,17 +131,10 @@ export default function Tickets() {
             <p className="text-xs text-ink-soft">Show this QR at the door</p>
 
             <button
-              onClick={() => {
-                const canvas = document.getElementById('ticket-qr')
-                if (!canvas) return
-                const link = document.createElement('a')
-                link.download = `sesion-ticket-${active.session.id}.png`
-                link.href = canvas.toDataURL('image/png')
-                link.click()
-              }}
+              onClick={() => saveCanvasImage('ticket-qr', `sesion-ticket-${active.session.id}.png`)}
               className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink py-3 font-semibold text-bg transition-transform active:scale-95"
             >
-              <Download size={18} /> Download ticket
+              <Download size={18} /> Save ticket
             </button>
           </div>
         </div>

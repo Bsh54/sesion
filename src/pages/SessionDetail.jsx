@@ -28,6 +28,7 @@ import {
 } from '../data/sessions'
 import { getSession } from '../lib/store'
 import { addTicket } from '../lib/tickets'
+import { saveCanvasImage } from '../lib/download'
 import { getAttendees } from '../lib/profile'
 import { avatarUrl, displayAvatar, shortAddress } from '../lib/avatar'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
@@ -489,17 +490,10 @@ export default function SessionDetail() {
             <p className="text-xs text-ink-soft">Show this QR at the door</p>
 
             <button
-              onClick={() => {
-                const c = document.getElementById('booked-qr')
-                if (!c) return
-                const link = document.createElement('a')
-                link.download = `sesion-ticket-${session.id}.png`
-                link.href = c.toDataURL('image/png')
-                link.click()
-              }}
+              onClick={() => saveCanvasImage('booked-qr', `sesion-ticket-${session.id}.png`)}
               className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 font-semibold text-ink transition-transform active:scale-95"
             >
-              <Download size={18} /> Download ticket
+              <Download size={18} /> Save ticket
             </button>
             <button
               onClick={() => navigate('/tickets')}

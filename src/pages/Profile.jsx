@@ -20,7 +20,6 @@ import { getSessions } from '../lib/store'
 import { uploadImage } from '../lib/upload'
 import { displayAvatar, shortAddress } from '../lib/avatar'
 import { CATEGORIES } from '../data/sessions'
-import { formatDate, formatTime } from '../lib/format'
 
 function Stat({ icon: Icon, label, value }) {
   return (
@@ -200,47 +199,6 @@ export default function Profile() {
         <Stat icon={Sparkles} label="Top" value={topCategory} />
       </div>
 
-      {/* Upcoming sessions */}
-      <div className="mt-6">
-        <h2 className="mb-3 font-display text-xl font-bold">Upcoming sessions</h2>
-        {upcoming.length === 0 ? (
-          <div className="rounded-card border border-border p-5 text-center">
-            <p className="text-sm text-ink-soft">No upcoming sessions yet.</p>
-            <button
-              onClick={() => navigate('/app')}
-              className="mt-3 rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-bg transition-transform active:scale-95"
-            >
-              Explore sessions
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {upcoming.map((b) => (
-              <button
-                key={b.id}
-                onClick={() => navigate(`/session/${b.session.id}`)}
-                className="flex w-full items-center gap-4 rounded-card border border-border bg-surface p-3 text-left transition-transform active:scale-[.99]"
-              >
-                <img
-                  src={b.session.image}
-                  alt=""
-                  className="h-16 w-16 shrink-0 rounded-2xl object-cover"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-display text-lg font-bold leading-tight">
-                    {b.session.title}
-                  </p>
-                  <p className="tnum mt-0.5 text-sm text-ink-soft">
-                    {formatDate(b.session.startsAt)} · {formatTime(b.session.startsAt)}
-                  </p>
-                </div>
-                <ChevronRight size={20} className="shrink-0 text-ink-soft" />
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-
       {/* Coach space entry */}
       <button
         onClick={() => navigate('/coach')}
@@ -251,17 +209,6 @@ export default function Profile() {
           <span className="text-sm text-bg/60">Host sessions and get paid in NIM</span>
         </span>
         <ChevronRight size={20} className="text-bg/70" />
-      </button>
-
-      {/* Link to tickets */}
-      <button
-        onClick={() => navigate('/tickets')}
-        className="mt-4 flex w-full items-center justify-between rounded-card border border-border bg-surface px-5 py-4 text-left transition-transform active:scale-[.99]"
-      >
-        <span className="flex items-center gap-3 font-semibold">
-          <Ticket size={20} /> My tickets
-        </span>
-        <ChevronRight size={20} className="text-ink-soft" />
       </button>
 
       <button
