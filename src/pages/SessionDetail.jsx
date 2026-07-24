@@ -61,6 +61,7 @@ export default function SessionDetail() {
 
   const [status, setStatus] = useState('idle') // idle | paying | booked
   const [ticket, setTicket] = useState(null)
+  const [error, setError] = useState('')
 
   if (!session) {
     return (
@@ -82,6 +83,7 @@ export default function SessionDetail() {
   const bio = `${session.coach.name} is a verified ${category?.label.toLowerCase() ?? 'fitness'} coach with ${session.coach.sessions} sessions hosted and a ${session.coach.rating}-star rating from the community.`
 
   const handleBook = async () => {
+    setError('')
     setStatus('paying')
     try {
       const res = await paySession({
@@ -90,9 +92,10 @@ export default function SessionDetail() {
         ref: `SESION:${session.id}`,
       })
       if (navigator.vibrate) navigator.vibrate(10)
-      setTicket({ code: res.txHash })
+      setTicket({ code: res.receipt })
       setStatus('booked')
-    } catch {
+    } catch (e) {
+      setError(e?.message || 'Payment failed. Please try again.')
       setStatus('idle')
     }
   }
@@ -162,6 +165,11 @@ export default function SessionDetail() {
                 `Book · ${session.priceNim} NIM`
               )}
             </button>
+            {error && (
+              <p className="mt-3 text-center text-sm font-medium text-destructive" role="alert">
+                {error}
+              </p>
+            )}
             <p className="mt-3 text-center text-xs text-ink-soft">
               Free cancellation up to 2 hours before
             </p>
@@ -390,13 +398,15 @@ export default function SessionDetail() {
 
             <div className="flex justify-center">
               <QRCodeSVG
-                value={`SESION:${session.id}:${ticket.code}`}
+                value={`SESION:${session.id}:${ticket.code.slice(0, 24)}`}
                 size={180}
                 fgColor="#14161B"
                 bgColor="#FFFFFF"
               />
             </div>
-            <p className="tnum mt-3 text-xs text-ink-soft">Ticket {ticket.code}</p>
+            <p className="tnum mt-3 text-xs text-ink-soft">
+              Ticket {ticket.code.slice(0, 10).toUpperCase()}
+            </p>
             <p className="text-xs text-ink-soft">Show this QR at the door</p>
 
             <button

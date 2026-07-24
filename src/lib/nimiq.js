@@ -40,16 +40,26 @@ export async function signIn(message = 'Sign in to Sesión') {
 }
 
 // Pays a coach directly. `ref` is written on-chain as the booking reference.
+// Nimiq Pay signs AND broadcasts, then returns the serialized transaction.
+// Returns { receipt } on success, or throws with a readable message.
 export async function paySession({ recipient, nim, ref }) {
   const provider = await getProvider()
   if (!provider) {
-    // Dev fallback: simulate a successful payment.
+    // Dev fallback (outside Nimiq Pay): simulate a successful payment.
     await new Promise((r) => setTimeout(r, 700))
-    return { txHash: 'DEV-' + Math.random().toString(36).slice(2, 10), dev: true }
+    return { receipt: 'DEV' + Math.random().toString(36).slice(2, 10).toUpperCase(), dev: true }
   }
-  return provider.sendBasicTransactionWithData({
+
+  const result = await provider.sendBasicTransactionWithData({
     recipient,
     value: nimToLuna(nim),
     data: ref,
   })
+
+  if (result && typeof result === 'object' && 'error' in result) {
+    throw new Error(result.error?.message || 'Payment failed')
+  }
+
+  // `result` is the serialized transaction string.
+  return { receipt: String(result) }
 }
