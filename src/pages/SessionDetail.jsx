@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import {
@@ -24,6 +24,8 @@ import {
 } from '../data/sessions'
 import { getSession } from '../lib/store'
 import { addTicket } from '../lib/tickets'
+import { getAttendees } from '../lib/profile'
+import { avatarUrl, shortAddress } from '../lib/avatar'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
 import { paySession, getAddress } from '../lib/nimiq'
 
@@ -63,6 +65,12 @@ export default function SessionDetail() {
   const [status, setStatus] = useState('idle') // idle | paying | booked
   const [ticket, setTicket] = useState(null)
   const [error, setError] = useState('')
+  const [attendees, setAttendees] = useState([])
+
+  useEffect(() => {
+    if (session) getAttendees(session.id).then(setAttendees)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session?.id])
 
   if (!session) {
     return (
@@ -318,29 +326,41 @@ export default function SessionDetail() {
             </div>
           </div>
 
-          {/* Who's coming */}
+          {/* Who's coming — real attendees */}
           <div>
             <div className="flex items-center justify-between">
               <SectionTitle>Who&apos;s coming</SectionTitle>
-              <span className={`text-sm font-semibold ${scarce ? 'text-coral' : 'text-ink-soft'}`}>
-                {session.booked} going · {left} left
-              </span>
+              <span className="text-sm font-semibold text-ink-soft">{attendees.length} going</span>
             </div>
-            <div className="mt-3 flex -space-x-2">
-              {Array.from({ length: Math.min(session.booked, 8) }).map((_, i) => (
-                <img
-                  key={i}
-                  src={`https://i.pravatar.cc/80?img=${(i + 3) * 5}`}
-                  alt=""
-                  className="h-9 w-9 rounded-full border-2 border-bg object-cover"
-                />
-              ))}
-              {session.booked > 8 && (
-                <span className="grid h-9 w-9 place-items-center rounded-full border-2 border-bg bg-muted text-xs font-semibold text-ink-soft">
-                  +{session.booked - 8}
-                </span>
-              )}
-            </div>
+            {attendees.length === 0 ? (
+              <p className="mt-3 text-sm text-ink-soft">Be the first to book this session.</p>
+            ) : (
+              <div className="mt-3 space-y-3">
+                <div className="flex -space-x-2">
+                  {attendees.slice(0, 10).map((a) => (
+                    <img
+                      key={a.wallet}
+                      src={avatarUrl(a.wallet)}
+                      alt={a.name || shortAddress(a.wallet)}
+                      title={a.name || shortAddress(a.wallet)}
+                      className="h-9 w-9 rounded-full border-2 border-bg bg-lime object-cover"
+                    />
+                  ))}
+                  {attendees.length > 10 && (
+                    <span className="grid h-9 w-9 place-items-center rounded-full border-2 border-bg bg-muted text-xs font-semibold text-ink-soft">
+                      +{attendees.length - 10}
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-ink-soft">
+                  {attendees
+                    .slice(0, 3)
+                    .map((a) => a.name || 'Guest')
+                    .join(' · ')}
+                  {attendees.length > 3 ? ` and ${attendees.length - 3} more` : ''}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* About */}

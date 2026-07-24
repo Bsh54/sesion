@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  User,
   Copy,
   Check,
   Ticket,
@@ -10,9 +9,12 @@ import {
   ChevronRight,
   Loader2,
   Wallet,
+  Pencil,
 } from 'lucide-react'
 import { getAddress } from '../lib/nimiq'
 import { getTickets } from '../lib/tickets'
+import { getProfile, saveProfile } from '../lib/profile'
+import { avatarUrl, shortAddress } from '../lib/avatar'
 import { getSession } from '../lib/store'
 import { CATEGORIES } from '../data/sessions'
 import { formatDate, formatTime } from '../lib/format'
@@ -29,15 +31,23 @@ function Stat({ icon: Icon, label, value }) {
 
 export default function Profile() {
   const navigate = useNavigate()
-  const [wallet, setWallet] = useState(undefined) // undefined = loading, null = no wallet
+  const [wallet, setWallet] = useState(undefined) // undefined = loading, null = none
   const [tickets, setTickets] = useState([])
+  const [name, setName] = useState('')
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState('')
+  const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     ;(async () => {
       const w = await getAddress()
       setWallet(w ?? null)
-      if (w) setTickets(await getTickets(w))
+      if (w) {
+        setTickets(await getTickets(w))
+        const p = await getProfile(w)
+        setName(p.name || '')
+      }
     })()
   }, [])
 
@@ -72,13 +82,10 @@ export default function Profile() {
     .filter((b) => new Date(b.session.startsAt).getTime() >= now)
     .sort((a, b) => new Date(a.session.startsAt) - new Date(b.session.startsAt))
 
-  // Favourite category = most frequent among booked sessions.
   const counts = {}
   booked.forEach((b) => (counts[b.session.category] = (counts[b.session.category] || 0) + 1))
   const topId = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0]
   const topCategory = CATEGORIES.find((c) => c.id === topId)?.label ?? '—'
-
-  const shortAddr = `${wallet.slice(0, 14)}…${wallet.slice(-4)}`
 
   const copy = async () => {
     try {
@@ -90,26 +97,73 @@ export default function Profile() {
     }
   }
 
+  const save = async () => {
+    setSaving(true)
+    try {
+      const clean = draft.trim().slice(0, 40)
+      await saveProfile({ wallet, name: clean })
+      setName(clean)
+      setEditing(false)
+    } catch {
+      /* ignore */
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <div className="mx-auto max-w-2xl px-5 pb-28 pt-6">
       <h1 className="font-display text-3xl font-extrabold tracking-tight">Profile</h1>
 
-      {/* Wallet card */}
-      <div className="mt-5 flex items-center gap-4 rounded-card bg-ink p-5 text-bg">
-        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-lime text-ink">
-          <User size={26} />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-xs font-semibold uppercase tracking-wide text-bg/60">Your wallet</p>
-          <p className="tnum truncate font-display text-lg font-bold">{shortAddr}</p>
+      {/* Wallet + identity card */}
+      <div className="mt-5 rounded-card bg-ink p-5 text-bg">
+        <div className="flex items-center gap-4">
+          <img
+            src={avatarUrl(wallet)}
+            alt="Your avatar"
+            className="h-14 w-14 shrink-0 rounded-full bg-lime object-cover"
+          />
+          <div className="min-w-0 flex-1">
+            {editing ? (
+              <div className="flex items-center gap-2">
+                <input
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  maxLength={40}
+                  placeholder="Your name"
+                  autoFocus
+                  className="w-full min-w-0 rounded-full bg-bg/10 px-3 py-2 text-bg outline-none placeholder:text-bg/50"
+                />
+                <button
+                  onClick={save}
+                  disabled={saving}
+                  className="shrink-0 rounded-full bg-lime px-4 py-2 text-sm font-semibold text-ink transition-transform active:scale-95 disabled:opacity-60"
+                >
+                  {saving ? '…' : 'Save'}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  setDraft(name)
+                  setEditing(true)
+                }}
+                className="flex items-center gap-2"
+              >
+                <span className="font-display text-lg font-bold">{name || 'Add your name'}</span>
+                <Pencil size={14} className="text-bg/60" />
+              </button>
+            )}
+            <p className="tnum truncate text-sm text-bg/60">{shortAddress(wallet)}</p>
+          </div>
+          <button
+            onClick={copy}
+            aria-label="Copy address"
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-bg/10 text-bg transition-transform active:scale-95"
+          >
+            {copied ? <Check size={18} className="text-lime" /> : <Copy size={18} />}
+          </button>
         </div>
-        <button
-          onClick={copy}
-          aria-label="Copy address"
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-bg/10 text-bg transition-transform active:scale-95"
-        >
-          {copied ? <Check size={18} className="text-lime" /> : <Copy size={18} />}
-        </button>
       </div>
 
       {/* Stats */}
