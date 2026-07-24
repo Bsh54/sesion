@@ -28,58 +28,44 @@ export default function Landing() {
 
   return (
     <div className="min-h-dvh bg-bg">
-      {/* Navbar */}
-      <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
-        <span className="font-display text-2xl font-extrabold tracking-tight">Sesión</span>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate('/create')}
-            className="hidden text-sm font-semibold text-ink sm:block"
-          >
-            Become a coach
-          </button>
-          <button
-            onClick={() => navigate('/app')}
-            className="rounded-full bg-ink px-5 py-2.5 text-sm font-semibold text-bg transition-transform active:scale-95"
-          >
-            Open app
-          </button>
-        </div>
-      </header>
+      {/* HERO — full-bleed image behind the whole hero, nav overlay, centered text */}
+      <section className="relative w-full overflow-hidden">
+        <img
+          src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=1600&q=75"
+          alt="A coach leading an energetic fitness class"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-ink/55" />
 
-      {/* 1. HERO — full-bleed visual + one primary CTA */}
-      <section className="mx-auto max-w-5xl px-5 pt-2 pb-12">
-        <div className="relative min-h-[440px] overflow-hidden rounded-card sm:min-h-[520px]">
-          <img
-            src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=1400&q=75"
-            alt="A coach leading an energetic fitness class"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/10" />
+        <div className="relative">
+          {/* Nav (over image) */}
+          <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
+            <span className="font-display text-2xl font-extrabold tracking-tight text-bg">
+              Sesión
+            </span>
+            <button
+              onClick={() => navigate('/app')}
+              className="rounded-full bg-bg px-5 py-2.5 text-sm font-semibold text-ink transition-transform active:scale-95"
+            >
+              Open app
+            </button>
+          </header>
 
-          <div className="relative flex min-h-[440px] flex-col justify-end p-6 sm:min-h-[520px] sm:p-10">
-            <h1 className="max-w-2xl font-display text-[clamp(2.75rem,9vw,5rem)] font-extrabold uppercase leading-[0.92] tracking-tight text-bg">
+          {/* Centered hero content */}
+          <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-5 pb-16 text-center sm:min-h-[76vh]">
+            <h1 className="font-display text-[clamp(2.75rem,10vw,5.5rem)] font-extrabold uppercase leading-[0.92] tracking-tight text-bg">
               Find your next <span className="bg-lime px-2 text-ink">session.</span>
             </h1>
-            <p className="mt-4 max-w-md text-base text-bg/80 sm:text-lg">
+            <p className="mx-auto mt-5 max-w-md text-lg text-bg/85">
               Book local coaches for yoga, boxing, dance and more. Pay directly in NIM — instant,
               no card, no borders.
             </p>
-
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <button
-                onClick={() => navigate('/app')}
-                className="flex items-center justify-center gap-2 rounded-full bg-lime px-8 py-4 text-base font-semibold text-ink shadow-float transition-transform active:scale-95"
-              >
-                Explore sessions <ArrowRight size={20} />
-              </button>
-              <button
-                onClick={() => navigate('/create')}
-                className="text-base font-semibold text-bg underline-offset-4 hover:underline"
-              >
-                I&apos;m a coach
-              </button>
-            </div>
+            <button
+              onClick={() => navigate('/app')}
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-lime px-9 py-4 text-base font-semibold text-ink shadow-float transition-transform active:scale-95"
+            >
+              Explore sessions <ArrowRight size={20} />
+            </button>
           </div>
         </div>
       </section>
