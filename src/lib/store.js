@@ -1,39 +1,13 @@
 // Session store.
-// Backed by localStorage, seeded from the demo catalog on first run.
-// The supply side (coaches, sessions) is curated for now; a coach onboarding
-// flow with a shared backend is on the roadmap.
-import { SESSIONS as SEED } from '../data/sessions'
+// The catalog is curated (static seed) for now, so we read it directly.
+// When a shared backend (coach onboarding) lands, these functions become the
+// single place to swap in async data fetching.
+import { SESSIONS } from '../data/sessions'
 
-const KEY = 'sesion.sessions.v1'
-
-function load() {
-  try {
-    const raw = localStorage.getItem(KEY)
-    if (raw) return JSON.parse(raw)
-  } catch {
-    /* ignore */
-  }
-  return null
-}
-
-function persist(list) {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(list))
-  } catch {
-    /* ignore */
-  }
-}
-
-// Returns all sessions, seeding demo content on first run.
 export function getSessions() {
-  let list = load()
-  if (!list) {
-    list = SEED
-    persist(list)
-  }
-  return list
+  return SESSIONS
 }
 
 export function getSession(id) {
-  return getSessions().find((s) => s.id === id) ?? null
+  return SESSIONS.find((s) => s.id === id) ?? null
 }
