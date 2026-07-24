@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Loader2, Wallet } from 'lucide-react'
-import { getAddress } from '../lib/nimiq'
+import { useNavigate, useOutletContext } from 'react-router-dom'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 import { getProfile } from '../lib/profile'
 import { createSession } from '../lib/store'
 import { CATEGORIES, LEVELS, CATEGORY_IMAGE } from '../data/sessions'
@@ -20,7 +19,7 @@ function Field({ label, children }) {
 
 export default function Create() {
   const navigate = useNavigate()
-  const [wallet, setWallet] = useState(undefined)
+  const { wallet } = useOutletContext()
   const [coachName, setCoachName] = useState('')
   const [form, setForm] = useState({
     title: '',
@@ -38,15 +37,8 @@ export default function Create() {
   const [error, setError] = useState('')
 
   useEffect(() => {
-    ;(async () => {
-      const w = await getAddress()
-      setWallet(w ?? null)
-      if (w) {
-        const p = await getProfile(w)
-        setCoachName(p.name || '')
-      }
-    })()
-  }, [])
+    getProfile(wallet).then((p) => setCoachName(p.name || ''))
+  }, [wallet])
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
 
@@ -59,7 +51,7 @@ export default function Create() {
     }
     setSubmitting(true)
     try {
-      const created = await createSession({
+      await createSession({
         title: form.title,
         category: form.category,
         priceNim: Number(form.priceNim) || 0,
@@ -73,41 +65,18 @@ export default function Create() {
         coachWallet: wallet,
         coachName,
       })
-      navigate('/coach')
-      void created
+      navigate('/coach/events')
     } catch {
       setError('Could not create the session. Please try again.')
       setSubmitting(false)
     }
   }
 
-  if (wallet === undefined) {
-    return (
-      <div className="flex min-h-[80vh] items-center justify-center">
-        <Loader2 size={28} className="animate-spin text-ink-soft" />
-      </div>
-    )
-  }
-
-  if (!wallet) {
-    return (
-      <div className="mx-auto flex min-h-[80vh] max-w-2xl flex-col items-center justify-center px-5 text-center">
-        <div className="grid h-16 w-16 place-items-center rounded-full bg-muted">
-          <Wallet size={28} className="text-ink-soft" strokeWidth={1.75} />
-        </div>
-        <h2 className="mt-4 font-display text-2xl font-bold">Connect your wallet</h2>
-        <p className="mt-1 max-w-xs text-sm text-ink-soft">
-          Open Sesión inside Nimiq Pay to host a session and get paid.
-        </p>
-      </div>
-    )
-  }
-
   return (
     <div className="mx-auto max-w-2xl px-5 pb-28 pt-5">
       <header className="flex items-center gap-3">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/coach/events')}
           aria-label="Back"
           className="grid h-10 w-10 place-items-center rounded-full bg-muted text-ink"
         >
@@ -212,8 +181,7 @@ export default function Create() {
         </Field>
 
         <p className="text-xs text-ink-soft">
-          Payments go straight to your wallet: <span className="tnum">{coachName || 'you'}</span> ·
-          you keep 100%.
+          Payments go straight to your wallet — you keep 100%.
         </p>
 
         {error && (
