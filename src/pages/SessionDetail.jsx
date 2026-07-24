@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
 import {
   ArrowLeft,
-  Share2,
   Star,
   MapPin,
   Calendar,
@@ -11,7 +10,6 @@ import {
   Gauge,
   Users,
   BadgeCheck,
-  ExternalLink,
   Check,
   Loader2,
 } from 'lucide-react'
@@ -72,18 +70,8 @@ export default function SessionDetail() {
 
   const category = CATEGORIES.find((c) => c.id === session.category)
   const { left, scarce } = spotsInfo(session)
-  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(session.location)}`
+  const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(session.location)}&z=14&output=embed`
   const bio = `${session.coach.name} is a verified ${category?.label.toLowerCase() ?? 'fitness'} coach with ${session.coach.sessions} sessions hosted and a ${session.coach.rating}-star rating from the community.`
-
-  const share = async () => {
-    const url = window.location.href
-    try {
-      if (navigator.share) await navigator.share({ title: session.title, url })
-      else await navigator.clipboard.writeText(url)
-    } catch {
-      /* user cancelled */
-    }
-  }
 
   const handleBook = async () => {
     setStatus('paying')
@@ -117,13 +105,6 @@ export default function SessionDetail() {
           className="absolute left-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-bg/90 text-ink transition-transform active:scale-95"
         >
           <ArrowLeft size={22} />
-        </button>
-        <button
-          onClick={share}
-          aria-label="Share"
-          className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-bg/90 text-ink transition-transform active:scale-95"
-        >
-          <Share2 size={20} />
         </button>
         {category && (
           <span className="absolute bottom-4 left-4 rounded-full bg-lime px-3 py-1 text-xs font-semibold text-ink">
@@ -176,6 +157,21 @@ export default function SessionDetail() {
             <p className="mt-3 text-center text-xs text-ink-soft">
               Free cancellation up to 2 hours before
             </p>
+
+            {/* Location map */}
+            <div className="mt-5 overflow-hidden rounded-card border border-border">
+              <iframe
+                title={`Map of ${session.location}`}
+                src={mapSrc}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="h-40 w-full border-0"
+              />
+              <div className="flex items-center gap-2 px-4 py-3">
+                <MapPin size={16} className="shrink-0 text-ink-soft" />
+                <span className="text-sm font-medium">{session.location}</span>
+              </div>
+            </div>
           </div>
         </aside>
 
@@ -205,19 +201,9 @@ export default function SessionDetail() {
                 {formatDate(session.startsAt)} · {formatTime(session.startsAt)}
               </span>
             </div>
-            <div className="flex items-center justify-between gap-3 rounded-card border border-border p-4">
-              <div className="flex items-center gap-3">
-                <MapPin size={18} className="shrink-0 text-ink-soft" />
-                <span className="text-sm font-medium">{session.location}</span>
-              </div>
-              <a
-                href={mapsUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="flex shrink-0 items-center gap-1 text-sm font-semibold text-ink"
-              >
-                Map <ExternalLink size={14} />
-              </a>
+            <div className="flex items-center gap-3 rounded-card border border-border p-4">
+              <MapPin size={18} className="shrink-0 text-ink-soft" />
+              <span className="text-sm font-medium">{session.location}</span>
             </div>
           </div>
 
