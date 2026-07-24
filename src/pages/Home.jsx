@@ -16,7 +16,7 @@ export default function Home() {
   )
 
   return (
-    <div className="mx-auto max-w-2xl px-5 pb-28 pt-4">
+    <div className="mx-auto max-w-6xl px-5 pb-28 pt-4">
       {/* Header */}
       <header className="flex items-center justify-between">
         <h1 className="font-display text-3xl font-extrabold tracking-tight">Sesión</h1>
@@ -42,7 +42,7 @@ export default function Home() {
       {/* Sessions */}
       <section className="mt-6">
         <h2 className="mb-3 font-display text-2xl font-bold">This week</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {sessions.map((session) => (
             <SessionCard key={session.id} session={session} />
           ))}
