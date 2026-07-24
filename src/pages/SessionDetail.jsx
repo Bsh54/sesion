@@ -44,6 +44,10 @@ function Stars({ rating }) {
   )
 }
 
+function SectionTitle({ children }) {
+  return <h2 className="font-display text-xl font-bold">{children}</h2>
+}
+
 export default function SessionDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -98,11 +102,15 @@ export default function SessionDetail() {
   }
 
   return (
-    <div className="min-h-dvh bg-bg pb-28">
+    <div className="mx-auto max-w-6xl px-5 py-6">
       {/* Hero */}
-      <div className="relative">
-        <img src={session.image} alt={session.title} className="h-72 w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
+      <div className="relative overflow-hidden rounded-card">
+        <img
+          src={session.image}
+          alt={session.title}
+          className="h-72 w-full object-cover sm:h-96"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent" />
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
@@ -124,188 +132,206 @@ export default function SessionDetail() {
         )}
       </div>
 
-      {/* Content */}
-      <div className="mx-auto max-w-2xl px-5 pt-5">
-        <h1 className="font-display text-3xl font-extrabold uppercase leading-tight tracking-tight">
-          {session.title}
-        </h1>
-        <div className="mt-1 flex items-center gap-1 text-sm font-medium text-ink-soft">
-          <Star size={15} className="fill-lime text-lime" /> {session.coach.rating} · with{' '}
-          {session.coach.name}
-        </div>
-
-        {/* Quick stats */}
-        <div className="mt-4 flex gap-3">
-          <Stat icon={Clock} label="Duration" value={`${session.durationMin}m`} />
-          <Stat icon={Gauge} label="Level" value={session.level} />
-          <Stat icon={Users} label="Spots left" value={left} />
-        </div>
-
-        {/* When */}
-        <div className="mt-5 flex items-center gap-3 rounded-card border border-border p-4">
-          <Calendar size={18} className="text-ink-soft" />
-          <span className="tnum text-sm font-medium">
-            {formatDate(session.startsAt)} · {formatTime(session.startsAt)} · {session.durationMin}{' '}
-            min
-          </span>
-        </div>
-
-        {/* Where */}
-        <div className="mt-4 rounded-card border border-border p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <MapPin size={18} className="text-ink-soft" />
-              <div>
-                <p className="text-sm font-semibold">{session.location}</p>
-                <p className="text-xs text-ink-soft">Meet at the main entrance — signage on site.</p>
-              </div>
-            </div>
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex shrink-0 items-center gap-1 text-sm font-semibold text-ink"
-            >
-              Map <ExternalLink size={14} />
-            </a>
-          </div>
-        </div>
-
-        {/* Coach */}
-        <div className="mt-6">
-          <h2 className="mb-3 font-display text-xl font-bold">Your coach</h2>
-          <div className="rounded-card border border-border p-4">
-            <div className="flex items-center gap-3">
-              <img
-                src={session.coach.avatar}
-                alt=""
-                className="h-12 w-12 rounded-full object-cover"
-              />
-              <div className="flex-1">
-                <p className="flex items-center gap-1 font-semibold">
-                  {session.coach.name}
-                  <BadgeCheck size={16} className="text-lime" />
-                </p>
-                <p className="text-sm text-ink-soft">{session.coach.sessions} sessions hosted</p>
-              </div>
-              <span className="flex items-center gap-1 font-semibold">
-                <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
-              </span>
-            </div>
-            <p className="mt-3 text-sm leading-relaxed text-ink-soft">{bio}</p>
-          </div>
-        </div>
-
-        {/* What to bring */}
-        <div className="mt-6">
-          <h2 className="font-display text-xl font-bold">What&apos;s included</h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {AMENITIES.map((a) => (
-              <span
-                key={a}
-                className="rounded-full bg-muted px-3 py-1.5 text-sm font-medium text-ink"
-              >
-                {a}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Who's coming */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-xl font-bold">Who&apos;s coming</h2>
-            <span className={`text-sm font-semibold ${scarce ? 'text-coral' : 'text-ink-soft'}`}>
-              {session.booked} going · {left} left
-            </span>
-          </div>
-          <div className="mt-3 flex -space-x-2">
-            {Array.from({ length: Math.min(session.booked, 6) }).map((_, i) => (
-              <img
-                key={i}
-                src={`https://i.pravatar.cc/80?img=${(i + 3) * 5}`}
-                alt=""
-                className="h-9 w-9 rounded-full border-2 border-bg object-cover"
-              />
-            ))}
-            {session.booked > 6 && (
-              <span className="grid h-9 w-9 place-items-center rounded-full border-2 border-bg bg-muted text-xs font-semibold text-ink-soft">
-                +{session.booked - 6}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="mt-6">
-          <h2 className="font-display text-xl font-bold">About this session</h2>
-          <p className="mt-2 leading-relaxed text-ink-soft">{session.description}</p>
-        </div>
-
-        {/* Reviews */}
-        <div className="mt-6">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-xl font-bold">Reviews</h2>
-            <span className="flex items-center gap-1.5 text-sm font-semibold">
-              <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
-              <span className="font-medium text-ink-soft">· {session.coach.sessions} sessions</span>
-            </span>
-          </div>
-          <div className="mt-3 space-y-3">
-            {SAMPLE_REVIEWS.map((r) => (
-              <div key={r.name} className="rounded-card border border-border p-4">
-                <div className="flex items-center gap-3">
-                  <img src={r.avatar} alt="" className="h-9 w-9 rounded-full object-cover" />
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold">{r.name}</p>
-                    <Stars rating={r.rating} />
-                  </div>
-                </div>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{r.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Good to know */}
-        <div className="mt-6">
-          <h2 className="font-display text-xl font-bold">Good to know</h2>
-          <ul className="mt-2 space-y-2">
-            {GOOD_TO_KNOW.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-sm text-ink-soft">
-                <Check size={16} className="mt-0.5 shrink-0 text-success" />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {/* Sticky booking bar */}
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 p-4 pb-[calc(env(safe-area-inset-bottom)+1rem)] shadow-sheet backdrop-blur">
-        <div className="mx-auto flex max-w-2xl items-center justify-between gap-4">
-          <div>
-            <p className="tnum text-2xl font-bold leading-none">
-              {session.priceNim} <span className="text-base font-semibold text-ink-soft">NIM</span>
+      {/* Two-column layout: details + sticky booking card */}
+      <div className="mt-6 grid gap-6 lg:grid-cols-3 lg:gap-10">
+        {/* Booking card (right on desktop, top on mobile) */}
+        <aside className="lg:order-2">
+          <div className="rounded-card border border-border bg-surface p-5 shadow-card lg:sticky lg:top-6">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">Price</p>
+            <p className="tnum mt-1 font-display text-4xl font-extrabold leading-none">
+              {session.priceNim} <span className="text-xl text-ink-soft">NIM</span>
             </p>
-            <p className="text-xs text-ink-soft">per spot</p>
+            <p className="text-sm text-ink-soft">per spot</p>
+
+            <div className="mt-4 space-y-2 border-t border-border pt-4 text-sm">
+              <div className="flex items-center gap-2">
+                <Calendar size={16} className="text-ink-soft" />
+                <span className="tnum">
+                  {formatDate(session.startsAt)} · {formatTime(session.startsAt)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Users size={16} className="text-ink-soft" />
+                <span className={scarce ? 'font-semibold text-coral' : ''}>
+                  {left > 0 ? `${left} spots left` : 'Sold out'}
+                </span>
+              </div>
+            </div>
+
+            <button
+              onClick={handleBook}
+              disabled={status !== 'idle' || left <= 0}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-4 text-base font-semibold text-bg transition-transform active:scale-95 disabled:opacity-50"
+            >
+              {status === 'paying' ? (
+                <>
+                  <Loader2 size={20} className="animate-spin" /> Processing…
+                </>
+              ) : left <= 0 ? (
+                'Sold out'
+              ) : (
+                `Book · ${session.priceNim} NIM`
+              )}
+            </button>
+            <p className="mt-3 text-center text-xs text-ink-soft">
+              Free cancellation up to 2 hours before
+            </p>
           </div>
-          <button
-            onClick={handleBook}
-            disabled={status !== 'idle' || left <= 0}
-            className="flex items-center gap-2 rounded-full bg-ink px-8 py-4 text-base font-semibold text-bg transition-transform active:scale-95 disabled:opacity-50"
-          >
-            {status === 'paying' ? (
-              <>
-                <Loader2 size={20} className="animate-spin" /> Processing…
-              </>
-            ) : left <= 0 ? (
-              'Sold out'
-            ) : (
-              `Book · ${session.priceNim} NIM`
-            )}
-          </button>
-        </div>
+        </aside>
+
+        {/* Main details */}
+        <main className="space-y-8 lg:order-1 lg:col-span-2">
+          {/* Header */}
+          <div>
+            <h1 className="font-display text-4xl font-extrabold uppercase leading-tight tracking-tight">
+              {session.title}
+            </h1>
+            <div className="mt-1 flex items-center gap-1 text-sm font-medium text-ink-soft">
+              <Star size={15} className="fill-lime text-lime" /> {session.coach.rating} · with{' '}
+              {session.coach.name}
+            </div>
+            <div className="mt-4 flex gap-3">
+              <Stat icon={Clock} label="Duration" value={`${session.durationMin}m`} />
+              <Stat icon={Gauge} label="Level" value={session.level} />
+              <Stat icon={Users} label="Spots left" value={left} />
+            </div>
+          </div>
+
+          {/* When & where */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="flex items-center gap-3 rounded-card border border-border p-4">
+              <Calendar size={18} className="shrink-0 text-ink-soft" />
+              <span className="tnum text-sm font-medium">
+                {formatDate(session.startsAt)} · {formatTime(session.startsAt)}
+              </span>
+            </div>
+            <div className="flex items-center justify-between gap-3 rounded-card border border-border p-4">
+              <div className="flex items-center gap-3">
+                <MapPin size={18} className="shrink-0 text-ink-soft" />
+                <span className="text-sm font-medium">{session.location}</span>
+              </div>
+              <a
+                href={mapsUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="flex shrink-0 items-center gap-1 text-sm font-semibold text-ink"
+              >
+                Map <ExternalLink size={14} />
+              </a>
+            </div>
+          </div>
+
+          {/* Coach */}
+          <div>
+            <SectionTitle>Your coach</SectionTitle>
+            <div className="mt-3 rounded-card border border-border p-4">
+              <div className="flex items-center gap-3">
+                <img
+                  src={session.coach.avatar}
+                  alt=""
+                  className="h-12 w-12 rounded-full object-cover"
+                />
+                <div className="flex-1">
+                  <p className="flex items-center gap-1 font-semibold">
+                    {session.coach.name}
+                    <BadgeCheck size={16} className="text-lime" />
+                  </p>
+                  <p className="text-sm text-ink-soft">{session.coach.sessions} sessions hosted</p>
+                </div>
+                <span className="flex items-center gap-1 font-semibold">
+                  <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
+                </span>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-ink-soft">{bio}</p>
+            </div>
+          </div>
+
+          {/* What's included */}
+          <div>
+            <SectionTitle>What&apos;s included</SectionTitle>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {AMENITIES.map((a) => (
+                <span
+                  key={a}
+                  className="rounded-full bg-muted px-3 py-1.5 text-sm font-medium text-ink"
+                >
+                  {a}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Who's coming */}
+          <div>
+            <div className="flex items-center justify-between">
+              <SectionTitle>Who&apos;s coming</SectionTitle>
+              <span className={`text-sm font-semibold ${scarce ? 'text-coral' : 'text-ink-soft'}`}>
+                {session.booked} going · {left} left
+              </span>
+            </div>
+            <div className="mt-3 flex -space-x-2">
+              {Array.from({ length: Math.min(session.booked, 8) }).map((_, i) => (
+                <img
+                  key={i}
+                  src={`https://i.pravatar.cc/80?img=${(i + 3) * 5}`}
+                  alt=""
+                  className="h-9 w-9 rounded-full border-2 border-bg object-cover"
+                />
+              ))}
+              {session.booked > 8 && (
+                <span className="grid h-9 w-9 place-items-center rounded-full border-2 border-bg bg-muted text-xs font-semibold text-ink-soft">
+                  +{session.booked - 8}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* About */}
+          <div>
+            <SectionTitle>About this session</SectionTitle>
+            <p className="mt-2 max-w-prose leading-relaxed text-ink-soft">{session.description}</p>
+          </div>
+
+          {/* Reviews */}
+          <div>
+            <div className="flex items-center justify-between">
+              <SectionTitle>Reviews</SectionTitle>
+              <span className="flex items-center gap-1.5 text-sm font-semibold">
+                <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
+                <span className="font-medium text-ink-soft">
+                  · {session.coach.sessions} sessions
+                </span>
+              </span>
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {SAMPLE_REVIEWS.map((r) => (
+                <div key={r.name} className="rounded-card border border-border p-4">
+                  <div className="flex items-center gap-3">
+                    <img src={r.avatar} alt="" className="h-9 w-9 rounded-full object-cover" />
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold">{r.name}</p>
+                      <Stars rating={r.rating} />
+                    </div>
+                  </div>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{r.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Good to know */}
+          <div>
+            <SectionTitle>Good to know</SectionTitle>
+            <ul className="mt-2 space-y-2">
+              {GOOD_TO_KNOW.map((item) => (
+                <li key={item} className="flex items-start gap-2 text-sm text-ink-soft">
+                  <Check size={16} className="mt-0.5 shrink-0 text-success" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </main>
       </div>
 
       {/* Ticket overlay */}
