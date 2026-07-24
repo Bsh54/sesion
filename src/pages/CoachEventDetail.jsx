@@ -1,6 +1,17 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Users, Calendar, MapPin, Loader2, ScanLine, Check, X } from 'lucide-react'
+import {
+  ArrowLeft,
+  Users,
+  Calendar,
+  MapPin,
+  Loader2,
+  ScanLine,
+  ImagePlus,
+  Check,
+  X,
+} from 'lucide-react'
+import { Html5Qrcode } from 'html5-qrcode'
 import { getSession } from '../lib/store'
 import { getAttendees, checkinTicket } from '../lib/profile'
 import { displayAvatar, shortAddress } from '../lib/avatar'
@@ -22,6 +33,26 @@ export default function CoachEventDetail() {
     loadAttendees()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  const scanFileHandler = async (e) => {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setResult(null)
+    const html5 = new Html5Qrcode('qr-file')
+    try {
+      const text = await html5.scanFile(f, false)
+      onScan(text)
+    } catch {
+      setResult({ valid: false, reason: 'Could not read a QR from this image.' })
+    } finally {
+      try {
+        await html5.clear()
+      } catch {
+        /* ignore */
+      }
+      e.target.value = ''
+    }
+  }
 
   const onScan = async (text) => {
     setScanning(false)
@@ -88,21 +119,28 @@ export default function CoachEventDetail() {
         </div>
       </div>
 
-      {/* Bookings + scan */}
-      <div className="mt-4 flex items-center justify-between rounded-card bg-ink px-5 py-4 text-bg">
+      {/* Bookings + check-in */}
+      <div className="mt-4 rounded-card bg-ink px-5 py-4 text-bg">
         <span className="flex items-center gap-2 font-semibold">
           <Users size={18} className="text-lime" /> {session.booked}/{session.capacity} booked
         </span>
-        <button
-          onClick={() => {
-            setResult(null)
-            setScanning(true)
-          }}
-          className="flex items-center gap-2 rounded-full bg-lime px-4 py-2.5 text-sm font-semibold text-ink transition-transform active:scale-95"
-        >
-          <ScanLine size={18} /> Scan ticket
-        </button>
+        <div className="mt-3 flex gap-2">
+          <button
+            onClick={() => {
+              setResult(null)
+              setScanning(true)
+            }}
+            className="flex flex-1 items-center justify-center gap-2 rounded-full bg-lime px-4 py-2.5 text-sm font-semibold text-ink transition-transform active:scale-95"
+          >
+            <ScanLine size={18} /> Scan
+          </button>
+          <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/20 px-4 py-2.5 text-sm font-semibold text-bg">
+            <ImagePlus size={18} /> Upload
+            <input type="file" accept="image/*" onChange={scanFileHandler} className="hidden" />
+          </label>
+        </div>
       </div>
+      <div id="qr-file" className="hidden" />
 
       {/* Attendees */}
       <div className="mt-6">

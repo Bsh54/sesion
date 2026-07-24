@@ -11,6 +11,7 @@ import {
   Wallet,
   Pencil,
   Camera,
+  LogOut,
 } from 'lucide-react'
 import { getAddress } from '../lib/nimiq'
 import { getTickets } from '../lib/tickets'
@@ -261,6 +262,13 @@ export default function Profile() {
           <Ticket size={20} /> My tickets
         </span>
         <ChevronRight size={20} className="text-ink-soft" />
+      </button>
+
+      <button
+        onClick={() => navigate('/')}
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 text-sm font-semibold text-ink-soft transition-transform active:scale-95"
+      >
+        <LogOut size={16} /> Log out
       </button>
     </div>
   )

@@ -4,7 +4,8 @@ import { ArrowLeft, Loader2, ImagePlus } from 'lucide-react'
 import { getProfile } from '../lib/profile'
 import { createSession } from '../lib/store'
 import { uploadImage } from '../lib/upload'
-import { CATEGORIES, LEVELS, CATEGORY_IMAGE } from '../data/sessions'
+import LocationInput from '../components/LocationInput'
+import { CATEGORIES, LEVELS } from '../data/sessions'
 
 const inputClass =
   'w-full rounded-2xl border border-border bg-surface px-4 py-3 text-base outline-none focus:ring-2 focus:ring-lime'
@@ -38,6 +39,7 @@ export default function Create() {
   const [error, setError] = useState('')
   const [image, setImage] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [latLon, setLatLon] = useState({ lat: null, lon: null })
 
   useEffect(() => {
     getProfile(wallet).then((p) => setCoachName(p.name || ''))
@@ -65,6 +67,10 @@ export default function Create() {
       setError('Please fill in title, date, time and location.')
       return
     }
+    if (!image) {
+      setError('Please add a cover image.')
+      return
+    }
     setSubmitting(true)
     try {
       await createSession({
@@ -75,9 +81,11 @@ export default function Create() {
         level: form.level,
         startsAt: `${form.date}T${form.time}:00`,
         location: form.location,
+        lat: latLon.lat,
+        lon: latLon.lon,
         capacity: Number(form.capacity) || 10,
         description: form.description,
-        image: image || CATEGORY_IMAGE[form.category],
+        image,
         coachWallet: wallet,
         coachName,
       })
@@ -124,7 +132,7 @@ export default function Create() {
               )}
             </span>
             <span className="text-sm text-ink-soft">
-              {image ? 'Change photo' : 'Upload a photo (optional)'}
+              {image ? 'Change photo' : 'Upload a cover photo (required)'}
             </span>
             <input type="file" accept="image/*" onChange={onImage} className="hidden" />
           </label>
@@ -183,26 +191,29 @@ export default function Create() {
           </Field>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Location">
-            <input
-              className={inputClass}
-              value={form.location}
-              onChange={set('location')}
-              maxLength={120}
-              placeholder="Copacabana Beach"
-            />
-          </Field>
-          <Field label="Capacity">
-            <input
-              type="number"
-              min="1"
-              className={inputClass}
-              value={form.capacity}
-              onChange={set('capacity')}
-            />
-          </Field>
-        </div>
+        <Field label="Location">
+          <LocationInput
+            value={form.location}
+            onChange={(v) => {
+              setForm((f) => ({ ...f, location: v }))
+              setLatLon({ lat: null, lon: null })
+            }}
+            onSelect={(s) => {
+              setForm((f) => ({ ...f, location: s.name }))
+              setLatLon({ lat: s.lat, lon: s.lon })
+            }}
+            className={inputClass}
+          />
+        </Field>
+        <Field label="Capacity">
+          <input
+            type="number"
+            min="1"
+            className={inputClass}
+            value={form.capacity}
+            onChange={set('capacity')}
+          />
+        </Field>
 
         <Field label="Description">
           <textarea

@@ -10,6 +10,9 @@ import {
   Gauge,
   Users,
   BadgeCheck,
+  Phone,
+  Mail,
+  Link2,
   Check,
   Loader2,
 } from 'lucide-react'
@@ -99,7 +102,10 @@ export default function SessionDetail() {
 
   const category = CATEGORIES.find((c) => c.id === session.category)
   const { left, scarce } = spotsInfo(session)
-  const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(session.location)}&z=14&output=embed`
+  const mapSrc =
+    session.lat != null && session.lon != null
+      ? `https://maps.google.com/maps?q=${session.lat},${session.lon}&z=15&output=embed`
+      : `https://maps.google.com/maps?q=${encodeURIComponent(session.location)}&z=14&output=embed`
   const bio = `${session.coach.name} is a verified ${category?.label.toLowerCase() ?? 'fitness'} coach with ${session.coach.sessions} sessions hosted and a ${session.coach.rating}-star rating from the community.`
 
   const handleBook = async () => {
@@ -273,6 +279,37 @@ export default function SessionDetail() {
                 </span>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">{bio}</p>
+
+              {(session.coach.phone || session.coach.email || session.coach.link) && (
+                <div className="mt-3 flex flex-wrap gap-2 border-t border-border pt-3">
+                  {session.coach.phone && (
+                    <a
+                      href={`tel:${session.coach.phone}`}
+                      className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-sm font-medium text-ink"
+                    >
+                      <Phone size={14} /> {session.coach.phone}
+                    </a>
+                  )}
+                  {session.coach.email && (
+                    <a
+                      href={`mailto:${session.coach.email}`}
+                      className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-sm font-medium text-ink"
+                    >
+                      <Mail size={14} /> Email
+                    </a>
+                  )}
+                  {session.coach.link && (
+                    <a
+                      href={session.coach.link}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-sm font-medium text-ink"
+                    >
+                      <Link2 size={14} /> Link
+                    </a>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

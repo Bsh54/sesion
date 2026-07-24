@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { Copy, Check, Pencil, ArrowLeft } from 'lucide-react'
+import { Copy, Check, Pencil, ArrowLeft, Phone, Mail, Link2 } from 'lucide-react'
 import { getProfile, saveProfile } from '../lib/profile'
 import { avatarUrl, shortAddress } from '../lib/avatar'
+
+const inputClass =
+  'w-full rounded-2xl border border-border bg-surface px-4 py-3 text-base outline-none focus:ring-2 focus:ring-lime'
 
 export default function CoachProfile() {
   const navigate = useNavigate()
@@ -12,10 +15,34 @@ export default function CoachProfile() {
   const [draft, setDraft] = useState('')
   const [saving, setSaving] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [phone, setPhone] = useState('')
+  const [email, setEmail] = useState('')
+  const [link, setLink] = useState('')
+  const [savingContact, setSavingContact] = useState(false)
+  const [savedContact, setSavedContact] = useState(false)
 
   useEffect(() => {
-    getProfile(wallet).then((p) => setName(p.name || ''))
+    getProfile(wallet).then((p) => {
+      setName(p.name || '')
+      setPhone(p.phone || '')
+      setEmail(p.email || '')
+      setLink(p.link || '')
+    })
   }, [wallet])
+
+  const saveContact = async () => {
+    setSavingContact(true)
+    setSavedContact(false)
+    try {
+      await saveProfile({ wallet, phone, email, link })
+      setSavedContact(true)
+      setTimeout(() => setSavedContact(false), 1500)
+    } catch {
+      /* ignore */
+    } finally {
+      setSavingContact(false)
+    }
+  }
 
   const copy = async () => {
     try {
@@ -110,6 +137,54 @@ export default function CoachProfile() {
       <p className="mt-4 text-center text-sm text-ink-soft">
         Payments from your sessions land straight in this wallet.
       </p>
+
+      {/* Contact — shown on your session pages */}
+      <div className="mt-7">
+        <h2 className="font-display text-xl font-bold">Contact</h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          Shown on your sessions so people can reach you.
+        </p>
+        <div className="mt-3 space-y-3">
+          <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-3">
+            <Phone size={18} className="shrink-0 text-ink-soft" />
+            <input
+              className="w-full bg-transparent py-3 outline-none"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="Phone / WhatsApp"
+              maxLength={40}
+            />
+          </div>
+          <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-3">
+            <Mail size={18} className="shrink-0 text-ink-soft" />
+            <input
+              className="w-full bg-transparent py-3 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              type="email"
+              maxLength={80}
+            />
+          </div>
+          <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-3">
+            <Link2 size={18} className="shrink-0 text-ink-soft" />
+            <input
+              className="w-full bg-transparent py-3 outline-none"
+              value={link}
+              onChange={(e) => setLink(e.target.value)}
+              placeholder="Instagram / website link"
+              maxLength={120}
+            />
+          </div>
+        </div>
+        <button
+          onClick={saveContact}
+          disabled={savingContact}
+          className="mt-4 w-full rounded-full bg-ink py-3 font-semibold text-bg transition-transform active:scale-95 disabled:opacity-60"
+        >
+          {savingContact ? 'Saving…' : savedContact ? 'Saved ✓' : 'Save contact'}
+        </button>
+      </div>
     </div>
   )
 }
