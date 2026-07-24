@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { QRCodeSVG } from 'qrcode.react'
+import { QRCodeCanvas } from 'qrcode.react'
 import {
   ArrowLeft,
   Star,
@@ -14,6 +14,7 @@ import {
   Mail,
   Link2,
   Check,
+  Download,
   Loader2,
 } from 'lucide-react'
 import {
@@ -474,7 +475,8 @@ export default function SessionDetail() {
             <div className="my-5 border-t border-dashed border-border" />
 
             <div className="flex justify-center">
-              <QRCodeSVG
+              <QRCodeCanvas
+                id="booked-qr"
                 value={`SESION:${session.id}:${ticket.code.slice(0, 24)}`}
                 size={180}
                 fgColor="#14161B"
@@ -487,8 +489,21 @@ export default function SessionDetail() {
             <p className="text-xs text-ink-soft">Show this QR at the door</p>
 
             <button
+              onClick={() => {
+                const c = document.getElementById('booked-qr')
+                if (!c) return
+                const link = document.createElement('a')
+                link.download = `sesion-ticket-${session.id}.png`
+                link.href = c.toDataURL('image/png')
+                link.click()
+              }}
+              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full border border-border py-3 font-semibold text-ink transition-transform active:scale-95"
+            >
+              <Download size={18} /> Download ticket
+            </button>
+            <button
               onClick={() => navigate('/tickets')}
-              className="mt-5 w-full rounded-full bg-ink py-3 font-semibold text-bg transition-transform active:scale-95"
+              className="mt-3 w-full rounded-full bg-ink py-3 font-semibold text-bg transition-transform active:scale-95"
             >
               View my tickets
             </button>
