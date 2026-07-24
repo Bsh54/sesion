@@ -19,3 +19,7 @@ npm-debug.log*
 .idea/
 .DS_Store
 Thumbs.db
+
+# Internal docs — only README.md ships in the repo
+*.md
+!README.md

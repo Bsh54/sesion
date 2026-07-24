@@ -7,7 +7,7 @@ import BottomNav from './components/BottomNav'
 
 export default function App() {
   const { pathname } = useLocation()
-  const hideNav = pathname === '/' || pathname.startsWith('/session/')
+  const hideNav = pathname === '/'
 
   return (
     <div className="min-h-dvh bg-bg">

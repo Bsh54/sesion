@@ -98,7 +98,7 @@ export default function SessionDetail() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-5 py-6">
+    <div className="mx-auto max-w-6xl px-5 pb-28 pt-6">
       {/* Hero */}
       <div className="relative overflow-hidden rounded-card">
         <img
