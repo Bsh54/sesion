@@ -49,12 +49,20 @@ export default function Landing() {
             <span className="font-display text-2xl font-extrabold tracking-tight text-bg">
               Sesión
             </span>
-            <button
-              onClick={() => navigate('/app')}
-              className="rounded-full bg-bg px-5 py-2.5 text-sm font-semibold text-ink transition-transform active:scale-95"
-            >
-              Open app
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate('/coach')}
+                className="hidden text-sm font-semibold text-bg sm:block"
+              >
+                Become a coach
+              </button>
+              <button
+                onClick={() => navigate('/app')}
+                className="rounded-full bg-bg px-5 py-2.5 text-sm font-semibold text-ink transition-transform active:scale-95"
+              >
+                Open app
+              </button>
+            </div>
           </header>
 
           {/* Centered hero content */}
@@ -124,13 +132,20 @@ export default function Landing() {
             Find a session near you and pay your coach directly in NIM — in seconds, from
             anywhere in the world.
           </p>
-          <button
-            onClick={() => navigate('/app')}
-            className="mt-7 flex items-center gap-2 rounded-full bg-lime px-7 py-4 text-base font-semibold text-ink transition-transform active:scale-95"
-          >
-            Explore sessions <ArrowRight size={20} />
-          </button>
-          <p className="mt-4 text-sm text-bg/50">Are you a coach? Onboarding is coming soon.</p>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <button
+              onClick={() => navigate('/app')}
+              className="flex items-center justify-center gap-2 rounded-full bg-lime px-7 py-4 text-base font-semibold text-ink transition-transform active:scale-95"
+            >
+              Explore sessions <ArrowRight size={20} />
+            </button>
+            <button
+              onClick={() => navigate('/coach')}
+              className="flex items-center justify-center gap-2 rounded-full border border-bg/40 px-7 py-4 text-base font-semibold text-bg transition-transform active:scale-95"
+            >
+              Become a coach
+            </button>
+          </div>
         </div>
       </section>
 

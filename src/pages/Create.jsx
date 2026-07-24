@@ -73,7 +73,8 @@ export default function Create() {
         coachWallet: wallet,
         coachName,
       })
-      navigate(`/session/${created.id}`)
+      navigate('/coach')
+      void created
     } catch {
       setError('Could not create the session. Please try again.')
       setSubmitting(false)
