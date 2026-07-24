@@ -30,6 +30,17 @@ export async function createSession(payload) {
   return res.json()
 }
 
+// Delete a session (only the coach who created it can).
+export async function deleteSession(id, wallet) {
+  const res = await fetch(`${API}/session/delete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, wallet }),
+  })
+  if (!res.ok) throw new Error('Could not delete session')
+  return res.json()
+}
+
 // Sessions hosted by a given coach wallet.
 export async function getCoachSessions(wallet) {
   if (!wallet) return []

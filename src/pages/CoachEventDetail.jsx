@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import {
   ArrowLeft,
   Users,
@@ -10,9 +10,10 @@ import {
   ImagePlus,
   Check,
   X,
+  Trash2,
 } from 'lucide-react'
 import { Html5Qrcode } from 'html5-qrcode'
-import { getSession } from '../lib/store'
+import { getSession, deleteSession } from '../lib/store'
 import { getAttendees, checkinTicket } from '../lib/profile'
 import { displayAvatar, shortAddress } from '../lib/avatar'
 import { formatDate, formatTime } from '../lib/format'
@@ -21,10 +22,24 @@ import QrScanner from '../components/QrScanner'
 export default function CoachEventDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { wallet } = useOutletContext()
   const [session, setSession] = useState(undefined)
   const [attendees, setAttendees] = useState([])
   const [scanning, setScanning] = useState(false)
   const [result, setResult] = useState(null)
+  const [confirming, setConfirming] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      await deleteSession(id, wallet)
+      navigate('/coach/events')
+    } catch {
+      setDeleting(false)
+      setConfirming(false)
+    }
+  }
 
   const loadAttendees = () => getAttendees(id).then(setAttendees)
 
@@ -177,6 +192,46 @@ export default function CoachEventDetail() {
           </div>
         )}
       </div>
+
+      {/* Delete */}
+      <button
+        onClick={() => setConfirming(true)}
+        className="mt-8 flex w-full items-center justify-center gap-2 rounded-full border border-destructive/40 py-3 text-sm font-semibold text-destructive transition-transform active:scale-95"
+      >
+        <Trash2 size={16} /> Delete event
+      </button>
+
+      {/* Delete confirm */}
+      {confirming && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/60 p-5"
+          onClick={() => !deleting && setConfirming(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-card bg-surface p-6 text-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="font-display text-xl font-bold">Delete this event?</h2>
+            <p className="mt-1 text-sm text-ink-soft">This can&apos;t be undone.</p>
+            <div className="mt-5 flex gap-2">
+              <button
+                onClick={() => setConfirming(false)}
+                disabled={deleting}
+                className="flex-1 rounded-full border border-border py-3 font-semibold text-ink"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex-1 rounded-full bg-destructive py-3 font-semibold text-white disabled:opacity-60"
+              >
+                {deleting ? 'Deleting…' : 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Scanner */}
       {scanning && <QrScanner onResult={onScan} onClose={() => setScanning(false)} />}

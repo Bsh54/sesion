@@ -11,10 +11,13 @@ export async function getProfile(wallet) {
   }
 }
 
-export async function saveProfile({ wallet, name, avatar }) {
+export async function saveProfile({ wallet, name, avatar, phone, email, link }) {
   const body = { wallet }
   if (name !== undefined) body.name = name
   if (avatar !== undefined) body.avatar = avatar
+  if (phone !== undefined) body.phone = phone
+  if (email !== undefined) body.email = email
+  if (link !== undefined) body.link = link
   const res = await fetch(`${API}/profile`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
