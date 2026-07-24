@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, MapPin } from 'lucide-react'
+import { Search, MapPin, Loader2 } from 'lucide-react'
 import CategoryChips from '../components/CategoryChips'
 import SessionCard from '../components/SessionCard'
 import { getSessions } from '../lib/store'
@@ -8,10 +8,14 @@ import { getSessions } from '../lib/store'
 export default function Home() {
   const navigate = useNavigate()
   const [category, setCategory] = useState(null)
-  const [all] = useState(() => getSessions())
+  const [all, setAll] = useState(null)
+
+  useEffect(() => {
+    getSessions().then(setAll)
+  }, [])
 
   const sessions = useMemo(
-    () => (category ? all.filter((s) => s.category === category) : all),
+    () => (all ? (category ? all.filter((s) => s.category === category) : all) : []),
     [category, all],
   )
 
@@ -42,11 +46,19 @@ export default function Home() {
       {/* Sessions */}
       <section className="mt-6">
         <h2 className="mb-3 font-display text-2xl font-bold">This week</h2>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {sessions.map((session) => (
-            <SessionCard key={session.id} session={session} />
-          ))}
-        </div>
+        {all === null ? (
+          <div className="flex justify-center py-16">
+            <Loader2 size={28} className="animate-spin text-ink-soft" />
+          </div>
+        ) : sessions.length === 0 ? (
+          <p className="py-10 text-center text-sm text-ink-soft">No sessions in this category yet.</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {sessions.map((session) => (
+              <SessionCard key={session.id} session={session} />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   )

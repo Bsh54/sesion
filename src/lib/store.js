@@ -1,13 +1,42 @@
-// Session store.
-// The catalog is curated (static seed) for now, so we read it directly.
-// When a shared backend (coach onboarding) lands, these functions become the
-// single place to swap in async data fetching.
-import { SESSIONS } from '../data/sessions'
+// Sessions, served by the backend (coaches create them, clients browse them).
+const API = import.meta.env.VITE_API_URL || 'https://vps122470.serveur-vps.net/sesion-api'
 
-export function getSessions() {
-  return SESSIONS
+export async function getSessions() {
+  try {
+    const res = await fetch(`${API}/sessions`)
+    return res.ok ? await res.json() : []
+  } catch {
+    return []
+  }
 }
 
-export function getSession(id) {
-  return SESSIONS.find((s) => s.id === id) ?? null
+export async function getSession(id) {
+  try {
+    const res = await fetch(`${API}/session?id=${encodeURIComponent(id)}`)
+    return res.ok ? await res.json() : null
+  } catch {
+    return null
+  }
+}
+
+// Create a session (coach side).
+export async function createSession(payload) {
+  const res = await fetch(`${API}/sessions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error('Could not create session')
+  return res.json()
+}
+
+// Sessions hosted by a given coach wallet.
+export async function getCoachSessions(wallet) {
+  if (!wallet) return []
+  try {
+    const res = await fetch(`${API}/coach/sessions?wallet=${encodeURIComponent(wallet)}`)
+    return res.ok ? await res.json() : []
+  } catch {
+    return []
+  }
 }

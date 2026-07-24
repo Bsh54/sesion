@@ -60,17 +60,28 @@ function SectionTitle({ children }) {
 export default function SessionDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const session = getSession(id)
-
+  const [session, setSession] = useState(undefined) // undefined = loading, null = not found
   const [status, setStatus] = useState('idle') // idle | paying | booked
   const [ticket, setTicket] = useState(null)
   const [error, setError] = useState('')
   const [attendees, setAttendees] = useState([])
 
   useEffect(() => {
+    getSession(id).then((s) => setSession(s ?? null))
+  }, [id])
+
+  useEffect(() => {
     if (session) getAttendees(session.id).then(setAttendees)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session?.id])
+  }, [session])
+
+  if (session === undefined) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center">
+        <Loader2 size={28} className="animate-spin text-ink-soft" />
+      </div>
+    )
+  }
 
   if (!session) {
     return (
@@ -246,9 +257,9 @@ export default function SessionDetail() {
             <div className="mt-3 rounded-card border border-border p-4">
               <div className="flex items-center gap-3">
                 <img
-                  src={session.coach.avatar}
+                  src={avatarUrl(session.coach.wallet)}
                   alt=""
-                  className="h-12 w-12 rounded-full object-cover"
+                  className="h-12 w-12 rounded-full bg-lime object-cover"
                 />
                 <div className="flex-1">
                   <p className="flex items-center gap-1 font-semibold">

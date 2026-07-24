@@ -10,12 +10,14 @@ import {
   Loader2,
   Wallet,
   Pencil,
+  Plus,
+  Users,
 } from 'lucide-react'
 import { getAddress } from '../lib/nimiq'
 import { getTickets } from '../lib/tickets'
 import { getProfile, saveProfile } from '../lib/profile'
+import { getSessions, getCoachSessions } from '../lib/store'
 import { avatarUrl, shortAddress } from '../lib/avatar'
-import { getSession } from '../lib/store'
 import { CATEGORIES } from '../data/sessions'
 import { formatDate, formatTime } from '../lib/format'
 
@@ -32,7 +34,8 @@ function Stat({ icon: Icon, label, value }) {
 export default function Profile() {
   const navigate = useNavigate()
   const [wallet, setWallet] = useState(undefined) // undefined = loading, null = none
-  const [tickets, setTickets] = useState([])
+  const [booked, setBooked] = useState([])
+  const [coachSessions, setCoachSessions] = useState([])
   const [name, setName] = useState('')
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState('')
@@ -43,11 +46,17 @@ export default function Profile() {
     ;(async () => {
       const w = await getAddress()
       setWallet(w ?? null)
-      if (w) {
-        setTickets(await getTickets(w))
-        const p = await getProfile(w)
-        setName(p.name || '')
-      }
+      if (!w) return
+      const [tks, sessions, coach, p] = await Promise.all([
+        getTickets(w),
+        getSessions(),
+        getCoachSessions(w),
+        getProfile(w),
+      ])
+      const map = Object.fromEntries(sessions.map((s) => [s.id, s]))
+      setBooked(tks.map((t) => ({ ...t, session: map[t.sessionId] })).filter((x) => x.session))
+      setCoachSessions(coach)
+      setName(p.name || '')
     })()
   }, [])
 
@@ -72,10 +81,6 @@ export default function Profile() {
       </div>
     )
   }
-
-  const booked = tickets
-    .map((t) => ({ ...t, session: getSession(t.sessionId) }))
-    .filter((x) => x.session)
 
   const now = Date.now()
   const upcoming = booked
@@ -205,6 +210,46 @@ export default function Profile() {
                   </p>
                   <p className="tnum mt-0.5 text-sm text-ink-soft">
                     {formatDate(b.session.startsAt)} · {formatTime(b.session.startsAt)}
+                  </p>
+                </div>
+                <ChevronRight size={20} className="shrink-0 text-ink-soft" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Hosting (coach) */}
+      <div className="mt-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold">Hosting</h2>
+          <button
+            onClick={() => navigate('/create')}
+            className="flex items-center gap-1 rounded-full bg-lime px-4 py-2 text-sm font-semibold text-ink transition-transform active:scale-95"
+          >
+            <Plus size={16} /> New session
+          </button>
+        </div>
+        {coachSessions.length === 0 ? (
+          <div className="rounded-card border border-border p-5 text-center">
+            <p className="text-sm text-ink-soft">
+              Become a coach — create a session and get paid in NIM.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {coachSessions.map((s) => (
+              <button
+                key={s.id}
+                onClick={() => navigate(`/session/${s.id}`)}
+                className="flex w-full items-center gap-4 rounded-card border border-border bg-surface p-3 text-left transition-transform active:scale-[.99]"
+              >
+                <img src={s.image} alt="" className="h-16 w-16 shrink-0 rounded-2xl object-cover" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-display text-lg font-bold leading-tight">{s.title}</p>
+                  <p className="tnum mt-0.5 flex items-center gap-1.5 text-sm text-ink-soft">
+                    <Users size={14} /> {s.booked}/{s.capacity} booked ·{' '}
+                    {formatDate(s.startsAt)}
                   </p>
                 </div>
                 <ChevronRight size={20} className="shrink-0 text-ink-soft" />

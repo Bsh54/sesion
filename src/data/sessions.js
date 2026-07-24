@@ -10,6 +10,18 @@ export const CATEGORIES = [
   { id: 'wellness', label: 'Wellness', icon: 'HeartPulse' },
 ]
 
+export const LEVELS = ['All levels', 'Beginner', 'Intermediate']
+
+// Default cover image per category (a coach doesn't upload one).
+export const CATEGORY_IMAGE = {
+  yoga: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=70',
+  boxing: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=800&q=70',
+  dance: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=800&q=70',
+  pilates: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=70',
+  strength: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=70',
+  wellness: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=70',
+}
+
 export const SESSIONS = [
   {
     id: 's1',

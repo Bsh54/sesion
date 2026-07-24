@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ShieldCheck, Globe2, Zap, Wallet, ArrowRight } from 'lucide-react'
 import { getSessions } from '../lib/store'
@@ -25,7 +26,11 @@ function SectionTitle({ children }) {
 
 export default function Landing() {
   const navigate = useNavigate()
-  const featured = getSessions().slice(0, 4)
+  const [featured, setFeatured] = useState([])
+
+  useEffect(() => {
+    getSessions().then((s) => setFeatured(s.slice(0, 4)))
+  }, [])
 
   return (
     <div className="min-h-dvh bg-bg">
