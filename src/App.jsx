@@ -14,7 +14,6 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/app" element={<Home />} />
         <Route path="/search" element={<Placeholder title="Search" />} />
-        <Route path="/create" element={<Placeholder title="Create a session" />} />
         <Route path="/tickets" element={<Placeholder title="My tickets" />} />
         <Route path="/profile" element={<Placeholder title="Profile" />} />
         <Route path="/session/:id" element={<Placeholder title="Session details" />} />

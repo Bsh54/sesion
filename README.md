@@ -1,18 +1,23 @@
 # Sesión
 
-Book fitness & wellness sessions and pay independent coaches directly in **NIM** — instant, no card, no borders, non-custodial. A [Nimiq Pay](https://www.nimiq.com/nimiq-pay/) Mini App.
+Book fitness & wellness sessions and pay coaches directly in **NIM** — instant, no card, no borders, non-custodial. A [Nimiq Pay](https://www.nimiq.com/nimiq-pay/) Mini App.
 
 ## What it does
 
-- **Clients** browse a marketplace of local classes (yoga, boxing, dance, pilates, strength, wellness), book a spot, pay the coach directly in NIM, and get a QR ticket.
-- **Coaches** sign in with their Nimiq wallet, create sessions, share a link, receive payments straight to their wallet, and scan the QR to check attendees in.
+Sesión is a marketplace for fitness & wellness classes (yoga, boxing, dance, pilates, strength, wellness). You:
 
-Payments go **directly** from client to coach — Sesión never holds funds.
+1. **Browse** local sessions from independent coaches.
+2. **Book** a spot and **pay the coach directly in NIM** — one tap, settled in seconds.
+3. **Get a QR ticket** to show at the door.
+
+Payments go **straight from you to the coach's wallet** — Sesión never holds funds, takes no card, and asks for no KYC. That means a coach anywhere in the world can get paid instantly, even where cards and Stripe don't work.
+
+> The supply side (coaches and their sessions) is curated for now. A self-serve coach onboarding flow, backed by a shared database, is on the roadmap.
 
 ## Tech stack
 
 - React + Vite + Tailwind CSS
-- [`@nimiq/mini-app-sdk`](https://www.npmjs.com/package/@nimiq/mini-app-sdk)
+- [`@nimiq/mini-app-sdk`](https://www.npmjs.com/package/@nimiq/mini-app-sdk) for wallet access and payments
 - Deployed on Vercel
 
 ## Getting started
@@ -22,7 +27,7 @@ npm install
 npm run dev
 ```
 
-The app runs in a normal browser (with a mock payment provider) and inside Nimiq Pay via:
+The app runs in a normal browser (with a mock payment provider for development) and inside Nimiq Pay via:
 
 ```
 nimiqpay://miniapp?url=<your-hosted-url>
@@ -33,9 +38,9 @@ nimiqpay://miniapp?url=<your-hosted-url>
 ```
 src/
   components/   Reusable UI (SessionCard, CategoryChips, BottomNav)
-  data/         Mock catalog (until Supabase is wired up)
-  lib/          Nimiq SDK wrapper + formatting helpers
-  pages/        Screens (Home marketplace, ...)
+  data/         Demo catalog (seed content)
+  lib/          Nimiq SDK wrapper, session store, formatting helpers
+  pages/        Landing (public) + app screens (Home marketplace, ...)
 ```
 
 See `DESIGN.md` for the full design system.

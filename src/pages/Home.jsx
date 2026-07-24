@@ -1,17 +1,18 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Search, MapPin, ShieldCheck, ArrowRight } from 'lucide-react'
+import { Search, MapPin, ShieldCheck } from 'lucide-react'
 import CategoryChips from '../components/CategoryChips'
 import SessionCard from '../components/SessionCard'
-import { SESSIONS } from '../data/sessions'
+import { getSessions } from '../lib/store'
 
 export default function Home() {
   const navigate = useNavigate()
   const [category, setCategory] = useState(null)
+  const [all] = useState(() => getSessions())
 
   const sessions = useMemo(
-    () => (category ? SESSIONS.filter((s) => s.category === category) : SESSIONS),
-    [category],
+    () => (category ? all.filter((s) => s.category === category) : all),
+    [category, all],
   )
 
   return (
@@ -24,7 +25,7 @@ export default function Home() {
         </span>
       </header>
 
-      {/* Search = the primary CTA */}
+      {/* Search */}
       <button
         onClick={() => navigate('/search')}
         className="mt-4 flex w-full items-center gap-3 rounded-full bg-surface px-5 py-4 text-left shadow-card active:scale-[.99]"
@@ -38,7 +39,7 @@ export default function Home() {
         <CategoryChips active={category} onSelect={setCategory} />
       </div>
 
-      {/* Featured sessions */}
+      {/* Sessions */}
       <section className="mt-6">
         <h2 className="mb-3 font-display text-2xl font-bold">This week</h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -55,18 +56,6 @@ export default function Home() {
           Pay coaches directly in NIM. No card, no borders, no platform fee.
         </p>
       </div>
-
-      {/* Coach CTA */}
-      <button
-        onClick={() => navigate('/create')}
-        className="mt-4 flex w-full items-center justify-between rounded-card border border-border bg-surface px-5 py-4 text-left active:scale-[.99]"
-      >
-        <span>
-          <span className="block font-display text-xl font-bold">Are you a coach?</span>
-          <span className="text-sm text-ink-soft">Create a session and get paid instantly.</span>
-        </span>
-        <ArrowRight size={22} className="text-ink" />
-      </button>
     </div>
   )
 }

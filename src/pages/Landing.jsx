@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { ShieldCheck, Globe2, Zap, Wallet, ArrowRight } from 'lucide-react'
-import { SESSIONS } from '../data/sessions'
+import { getSessions } from '../lib/store'
 import SessionCard from '../components/SessionCard'
 
 // Landing structure (ui-ux-pro-max "Marketplace / Directory" pattern, trimmed):
@@ -25,6 +25,7 @@ function SectionTitle({ children }) {
 
 export default function Landing() {
   const navigate = useNavigate()
+  const featured = getSessions().slice(0, 4)
 
   return (
     <div className="min-h-dvh bg-bg">
@@ -82,7 +83,7 @@ export default function Landing() {
           </button>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {SESSIONS.map((session) => (
+          {featured.map((session) => (
             <SessionCard key={session.id} session={session} />
           ))}
         </div>
@@ -108,22 +109,23 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* 4. CTA — become a host/seller */}
+      {/* 4. CTA — client */}
       <section className="mx-auto max-w-5xl px-5 py-12">
         <div className="rounded-card bg-ink px-6 py-12 sm:px-12">
           <h2 className="max-w-2xl font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-bg">
-            Coaches, get paid <span className="text-lime">anywhere.</span>
+            Ready to <span className="text-lime">move?</span>
           </h2>
           <p className="mt-4 max-w-lg text-lg text-bg/70">
-            No terminal, no bank, no platform cut. Create a session, share your link, and NIM
-            lands straight in your wallet.
+            Find a session near you and pay your coach directly in NIM — in seconds, from
+            anywhere in the world.
           </p>
           <button
-            onClick={() => navigate('/create')}
+            onClick={() => navigate('/app')}
             className="mt-7 flex items-center gap-2 rounded-full bg-lime px-7 py-4 text-base font-semibold text-ink transition-transform active:scale-95"
           >
-            Create your first session <ArrowRight size={20} />
+            Explore sessions <ArrowRight size={20} />
           </button>
+          <p className="mt-4 text-sm text-bg/50">Are you a coach? Onboarding is coming soon.</p>
         </div>
       </section>
 

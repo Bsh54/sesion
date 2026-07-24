@@ -60,7 +60,3 @@ export const SESSIONS = [
     coach: { name: 'Sofia Marin', rating: 4.7, avatar: 'https://i.pravatar.cc/120?img=45', wallet: 'NQ00 DEMO COACH' },
   },
 ]
-
-export function getSession(id) {
-  return SESSIONS.find((s) => s.id === id) ?? null
-}
