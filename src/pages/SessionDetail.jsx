@@ -1,11 +1,33 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { QRCodeSVG } from 'qrcode.react'
-import { ArrowLeft, Star, MapPin, Calendar, Check, Loader2 } from 'lucide-react'
-import { CATEGORIES } from '../data/sessions'
+import {
+  ArrowLeft,
+  Share2,
+  Star,
+  MapPin,
+  Calendar,
+  Clock,
+  Gauge,
+  Users,
+  BadgeCheck,
+  Check,
+  Loader2,
+} from 'lucide-react'
+import { CATEGORIES, GOOD_TO_KNOW } from '../data/sessions'
 import { getSession } from '../lib/store'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
 import { paySession } from '../lib/nimiq'
+
+function Stat({ icon: Icon, label, value }) {
+  return (
+    <div className="flex-1 rounded-card border border-border bg-surface p-3 text-center">
+      <Icon size={18} className="mx-auto text-ink-soft" strokeWidth={1.75} />
+      <p className="mt-1 font-display text-lg font-bold leading-none">{value}</p>
+      <p className="text-xs text-ink-soft">{label}</p>
+    </div>
+  )
+}
 
 export default function SessionDetail() {
   const { id } = useParams()
@@ -32,6 +54,16 @@ export default function SessionDetail() {
   const category = CATEGORIES.find((c) => c.id === session.category)
   const { left, scarce } = spotsInfo(session)
 
+  const share = async () => {
+    const url = window.location.href
+    try {
+      if (navigator.share) await navigator.share({ title: session.title, url })
+      else await navigator.clipboard.writeText(url)
+    } catch {
+      /* user cancelled */
+    }
+  }
+
   const handleBook = async () => {
     setStatus('paying')
     try {
@@ -53,13 +85,20 @@ export default function SessionDetail() {
       {/* Hero */}
       <div className="relative">
         <img src={session.image} alt={session.title} className="h-72 w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           className="absolute left-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-bg/90 text-ink transition-transform active:scale-95"
         >
           <ArrowLeft size={22} />
+        </button>
+        <button
+          onClick={share}
+          aria-label="Share"
+          className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-bg/90 text-ink transition-transform active:scale-95"
+        >
+          <Share2 size={20} />
         </button>
         {category && (
           <span className="absolute bottom-4 left-4 rounded-full bg-lime px-3 py-1 text-xs font-semibold text-ink">
@@ -70,24 +109,44 @@ export default function SessionDetail() {
 
       {/* Content */}
       <div className="mx-auto max-w-2xl px-5 pt-5">
-        <h1 className="font-display text-3xl font-extrabold uppercase tracking-tight">
+        <h1 className="font-display text-3xl font-extrabold uppercase leading-tight tracking-tight">
           {session.title}
         </h1>
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-ink-soft">
-          <span className="tnum flex items-center gap-1.5">
-            <Calendar size={16} /> {formatDate(session.startsAt)} · {formatTime(session.startsAt)}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <MapPin size={16} /> {session.location}
-          </span>
+        <div className="mt-1 flex items-center gap-1 text-sm font-medium text-ink-soft">
+          <Star size={15} className="fill-lime text-lime" /> {session.coach.rating} · with{' '}
+          {session.coach.name}
+        </div>
+
+        {/* Quick stats */}
+        <div className="mt-4 flex gap-3">
+          <Stat icon={Clock} label="Duration" value={`${session.durationMin}m`} />
+          <Stat icon={Gauge} label="Level" value={session.level} />
+          <Stat icon={Users} label="Spots left" value={left} />
+        </div>
+
+        {/* When & where */}
+        <div className="mt-5 space-y-3 rounded-card border border-border p-4">
+          <div className="flex items-center gap-3">
+            <Calendar size={18} className="text-ink-soft" />
+            <span className="tnum text-sm font-medium">
+              {formatDate(session.startsAt)} · {formatTime(session.startsAt)}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <MapPin size={18} className="text-ink-soft" />
+            <span className="text-sm font-medium">{session.location}</span>
+          </div>
         </div>
 
         {/* Coach */}
         <div className="mt-5 flex items-center gap-3 rounded-card border border-border p-4">
           <img src={session.coach.avatar} alt="" className="h-12 w-12 rounded-full object-cover" />
           <div className="flex-1">
-            <p className="font-semibold">{session.coach.name}</p>
-            <p className="text-sm text-ink-soft">Coach</p>
+            <p className="flex items-center gap-1 font-semibold">
+              {session.coach.name}
+              <BadgeCheck size={16} className="text-lime" />
+            </p>
+            <p className="text-sm text-ink-soft">{session.coach.sessions} sessions hosted</p>
           </div>
           <span className="flex items-center gap-1 font-semibold">
             <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
@@ -98,9 +157,7 @@ export default function SessionDetail() {
         <div className="mt-6">
           <div className="flex items-center justify-between">
             <h2 className="font-display text-xl font-bold">Who&apos;s coming</h2>
-            <span
-              className={`text-sm font-semibold ${scarce ? 'text-coral' : 'text-ink-soft'}`}
-            >
+            <span className={`text-sm font-semibold ${scarce ? 'text-coral' : 'text-ink-soft'}`}>
               {session.booked} going · {left} left
             </span>
           </div>
@@ -125,6 +182,19 @@ export default function SessionDetail() {
         <div className="mt-6">
           <h2 className="font-display text-xl font-bold">About this session</h2>
           <p className="mt-2 leading-relaxed text-ink-soft">{session.description}</p>
+        </div>
+
+        {/* Good to know */}
+        <div className="mt-6">
+          <h2 className="font-display text-xl font-bold">Good to know</h2>
+          <ul className="mt-2 space-y-2">
+            {GOOD_TO_KNOW.map((item) => (
+              <li key={item} className="flex items-start gap-2 text-sm text-ink-soft">
+                <Check size={16} className="mt-0.5 shrink-0 text-success" />
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
 
