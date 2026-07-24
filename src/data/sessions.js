@@ -23,7 +23,7 @@ export const SESSIONS = [
     capacity: 12,
     booked: 10,
     image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&q=70',
-    coach: { name: 'Ana Ribeiro', rating: 4.9, sessions: 124, avatar: 'https://i.pravatar.cc/120?img=47', wallet: 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000' },
+    coach: { name: 'Ana Ribeiro', rating: 4.9, sessions: 124, avatar: 'https://i.pravatar.cc/120?img=47', wallet: 'NQ64 0740 6X5E LNYF 2S4N 2UD3 4N0L BL88 8TAJ' },
     description:
       'Greet the day with a flowing vinyasa practice on the sand. Move with your breath, build heat and start the day grounded. All levels welcome.',
   },
@@ -39,7 +39,7 @@ export const SESSIONS = [
     capacity: 15,
     booked: 6,
     image: 'https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=800&q=70',
-    coach: { name: 'Marcus Lee', rating: 4.8, sessions: 88, avatar: 'https://i.pravatar.cc/120?img=12', wallet: 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000' },
+    coach: { name: 'Marcus Lee', rating: 4.8, sessions: 88, avatar: 'https://i.pravatar.cc/120?img=12', wallet: 'NQ64 0740 6X5E LNYF 2S4N 2UD3 4N0L BL88 8TAJ' },
     description:
       'Learn footwork, guard and combinations in a high-energy beginner class. Gloves provided. Come ready to sweat and have fun.',
   },
@@ -55,7 +55,7 @@ export const SESSIONS = [
     capacity: 20,
     booked: 14,
     image: 'https://images.unsplash.com/photo-1524594152303-9fd13543fe6e?w=800&q=70',
-    coach: { name: 'Joy Adeyemi', rating: 5.0, sessions: 210, avatar: 'https://i.pravatar.cc/120?img=32', wallet: 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000' },
+    coach: { name: 'Joy Adeyemi', rating: 5.0, sessions: 210, avatar: 'https://i.pravatar.cc/120?img=32', wallet: 'NQ64 0740 6X5E LNYF 2S4N 2UD3 4N0L BL88 8TAJ' },
     description:
       'Feel the rhythm in a joyful Afro house session. No experience needed — just bring energy and a smile. We break down every move.',
   },
@@ -71,7 +71,7 @@ export const SESSIONS = [
     capacity: 10,
     booked: 9,
     image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=70',
-    coach: { name: 'Sofia Marin', rating: 4.7, sessions: 63, avatar: 'https://i.pravatar.cc/120?img=45', wallet: 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000' },
+    coach: { name: 'Sofia Marin', rating: 4.7, sessions: 63, avatar: 'https://i.pravatar.cc/120?img=45', wallet: 'NQ64 0740 6X5E LNYF 2S4N 2UD3 4N0L BL88 8TAJ' },
     description:
       'Build deep core strength and mobility on the reformer. Small group with personal corrections throughout. Some prior Pilates experience recommended.',
   },
@@ -87,7 +87,7 @@ export const SESSIONS = [
     capacity: 14,
     booked: 5,
     image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=70',
-    coach: { name: 'Diego Torres', rating: 4.8, sessions: 97, avatar: 'https://i.pravatar.cc/120?img=15', wallet: 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000' },
+    coach: { name: 'Diego Torres', rating: 4.8, sessions: 97, avatar: 'https://i.pravatar.cc/120?img=15', wallet: 'NQ64 0740 6X5E LNYF 2S4N 2UD3 4N0L BL88 8TAJ' },
     description:
       'A full-body kettlebell circuit that builds power and conditioning. Every movement is scalable, so you work at your own level.',
   },
@@ -103,7 +103,7 @@ export const SESSIONS = [
     capacity: 18,
     booked: 7,
     image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&q=70',
-    coach: { name: 'Maya Chen', rating: 5.0, sessions: 156, avatar: 'https://i.pravatar.cc/120?img=20', wallet: 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000' },
+    coach: { name: 'Maya Chen', rating: 5.0, sessions: 156, avatar: 'https://i.pravatar.cc/120?img=20', wallet: 'NQ64 0740 6X5E LNYF 2S4N 2UD3 4N0L BL88 8TAJ' },
     description:
       'Unwind with guided breathwork and healing sound frequencies. Leave calm, clear and recharged. Mats and blankets provided.',
   },
@@ -119,7 +119,7 @@ export const SESSIONS = [
     capacity: 16,
     booked: 15,
     image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=70',
-    coach: { name: 'Leila Haddad', rating: 4.9, sessions: 141, avatar: 'https://i.pravatar.cc/120?img=25', wallet: 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000' },
+    coach: { name: 'Leila Haddad', rating: 4.9, sessions: 141, avatar: 'https://i.pravatar.cc/120?img=25', wallet: 'NQ64 0740 6X5E LNYF 2S4N 2UD3 4N0L BL88 8TAJ' },
     description:
       'Twenty minutes of high-intensity intervals with a skyline view. Fast, fun and finished before work. Bring water — you will need it.',
   },
@@ -135,7 +135,7 @@ export const SESSIONS = [
     capacity: 12,
     booked: 4,
     image: 'https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=800&q=70',
-    coach: { name: 'Priya Nair', rating: 4.7, sessions: 52, avatar: 'https://i.pravatar.cc/120?img=41', wallet: 'NQ07 0000 0000 0000 0000 0000 0000 0000 0000' },
+    coach: { name: 'Priya Nair', rating: 4.7, sessions: 52, avatar: 'https://i.pravatar.cc/120?img=41', wallet: 'NQ64 0740 6X5E LNYF 2S4N 2UD3 4N0L BL88 8TAJ' },
     description:
       'A gentle, slow-paced introduction to yoga postures and breathing. Perfect if you are just starting out. Mats available on site.',
   },
