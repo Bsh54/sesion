@@ -45,9 +45,8 @@ export async function signIn(message = 'Sign in to Sesión') {
 export async function paySession({ recipient, nim, ref }) {
   const provider = await getProvider()
   if (!provider) {
-    // Dev fallback (outside Nimiq Pay): simulate a successful payment.
-    await new Promise((r) => setTimeout(r, 700))
-    return { receipt: 'DEV' + Math.random().toString(36).slice(2, 10).toUpperCase(), dev: true }
+    // No wallet is injected outside Nimiq Pay — no payment is possible here.
+    throw new Error('Open Sesión inside Nimiq Pay to pay.')
   }
 
   const result = await provider.sendBasicTransactionWithData({
