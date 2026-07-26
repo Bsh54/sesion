@@ -22,7 +22,7 @@ import { getSession } from '../lib/store'
 import { addTicket } from '../lib/tickets'
 import { saveCanvasImage } from '../lib/download'
 import { getAttendees } from '../lib/profile'
-import { avatarUrl, displayAvatar, shortAddress } from '../lib/avatar'
+import { displayAvatar, shortAddress } from '../lib/avatar'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
 import { paySession, getAddress } from '../lib/nimiq'
 
@@ -192,7 +192,7 @@ export default function SessionDetail() {
               ) : left <= 0 ? (
                 'Sold out'
               ) : (
-                `Book · ${session.priceNim} NIM`
+                `Reserve · ${session.priceNim} NIM`
               )}
             </button>
             {error && (
@@ -261,13 +261,13 @@ export default function SessionDetail() {
             </div>
           </div>
 
-          {/* Coach */}
+          {/* Host */}
           <div>
-            <SectionTitle>Your coach</SectionTitle>
+            <SectionTitle>Your host</SectionTitle>
             <div className="mt-3 rounded-card border border-border p-4">
               <div className="flex items-center gap-3">
                 <img
-                  src={avatarUrl(session.coach.wallet)}
+                  src={displayAvatar(session.coach.avatar, session.coach.wallet)}
                   alt=""
                   className="h-12 w-12 rounded-full bg-lime object-cover"
                 />
@@ -483,7 +483,7 @@ export default function SessionDetail() {
             <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-success/15 text-success">
               <Check size={28} />
             </div>
-            <h2 className="mt-3 font-display text-2xl font-bold">You&apos;re booked!</h2>
+            <h2 className="mt-3 font-display text-2xl font-bold">You&apos;re in! 🎉</h2>
             <p className="text-sm text-ink-soft">
               {session.title} · {formatDate(session.startsAt)} {formatTime(session.startsAt)}
             </p>

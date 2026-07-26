@@ -9,7 +9,7 @@ import SessionCard from '../components/SessionCard'
 
 const TRUST = [
   { icon: ShieldCheck, title: 'Non-custodial', text: 'Sesión never holds your money.' },
-  { icon: Globe2, title: 'No borders', text: 'Pay a coach anywhere in the world.' },
+  { icon: Globe2, title: 'No borders', text: 'Join or host anywhere in the world.' },
   { icon: Zap, title: 'Instant', text: 'Settlement in seconds, not days.' },
   { icon: Wallet, title: 'No card, no KYC', text: 'Just your Nimiq wallet.' },
 ]
@@ -38,7 +38,7 @@ export default function Landing() {
       <section className="relative w-full overflow-hidden">
         <img
           src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?w=1600&q=75"
-          alt="A coach leading an energetic fitness class"
+          alt="People in an energetic local fitness session"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div className="absolute inset-0 bg-ink/55" />
@@ -54,7 +54,7 @@ export default function Landing() {
                 onClick={() => navigate('/coach')}
                 className="hidden text-sm font-semibold text-bg sm:block"
               >
-                Become a coach
+                Host a session
               </button>
               <button
                 onClick={() => navigate('/app')}
@@ -71,8 +71,8 @@ export default function Landing() {
               Find your next <span className="text-lime">session.</span>
             </h1>
             <p className="mx-auto mt-5 max-w-md text-lg text-bg/85">
-              Book local coaches for yoga, boxing, dance and more. Pay directly in NIM — instant,
-              no card, no borders.
+              Start or join local fitness sessions near you. See who&apos;s coming, and reserve
+              your spot in NIM — no card, no borders.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3">
               <button
@@ -85,7 +85,7 @@ export default function Landing() {
                 onClick={() => navigate('/coach')}
                 className="inline-flex items-center gap-2 rounded-full border border-bg/40 px-9 py-4 text-base font-semibold text-bg transition-transform active:scale-95"
               >
-                Access coach space
+                Host a session
               </button>
             </div>
           </div>
@@ -137,8 +137,8 @@ export default function Landing() {
             Ready to <span className="text-lime">move?</span>
           </h2>
           <p className="mt-4 max-w-lg text-lg text-bg/70">
-            Find a session near you and pay your coach directly in NIM — in seconds, from
-            anywhere in the world.
+            Find a session near you, see who&apos;s coming, and reserve your spot in NIM — in
+            seconds, from anywhere in the world.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <button
@@ -151,7 +151,7 @@ export default function Landing() {
               onClick={() => navigate('/coach')}
               className="flex items-center justify-center gap-2 rounded-full border border-bg/40 px-7 py-4 text-base font-semibold text-bg transition-transform active:scale-95"
             >
-              Become a coach
+              Host a session
             </button>
           </div>
         </div>

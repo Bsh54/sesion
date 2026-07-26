@@ -205,7 +205,7 @@ export default function Profile() {
         className="mt-6 flex w-full items-center justify-between rounded-card bg-ink px-5 py-4 text-left text-bg transition-transform active:scale-[.99]"
       >
         <span>
-          <span className="block font-display text-lg font-bold">Coach space</span>
+          <span className="block font-display text-lg font-bold">Host space</span>
           <span className="text-sm text-bg/60">Host sessions and get paid in NIM</span>
         </span>
         <ChevronRight size={20} className="text-bg/70" />

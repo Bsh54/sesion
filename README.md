@@ -5,8 +5,8 @@
 <h1 align="center">Sesión</h1>
 
 <p align="center">
-  Book fitness &amp; wellness sessions and pay coaches directly in <strong>NIM</strong> —
-  instant, no card, no borders, non-custodial. A <a href="https://www.nimiq.com/nimiq-pay/">Nimiq Pay</a> Mini App.
+  Join local fitness sessions near you — see who's coming, and reserve your spot in <strong>NIM</strong>.
+  Instant, no card, no borders. A <a href="https://www.nimiq.com/nimiq-pay/">Nimiq Pay</a> Mini App.
 </p>
 
 ## Open the app
@@ -23,25 +23,26 @@ Or use the deeplink: `nimiqpay://miniapp?url=https://sesion-alpha.vercel.app/`
 
 ## What it does
 
-Sesión is a two-sided marketplace for fitness &amp; wellness classes (yoga, boxing, dance, pilates, strength, wellness).
+Sesión is the chill way to **start or join local fitness sessions** — a sunrise run, a boxing class, yoga in the park, a pickup game. Anyone can host, anyone can join. Two sides:
 
-**Clients**
-1. **Browse** local sessions from independent coaches.
-2. **Book** a spot and **pay the coach directly in NIM** — one tap, settled in seconds.
+**People who join**
+1. **Browse** local sessions and see **who's coming**.
+2. **Reserve your spot** by paying the host in **NIM** — one tap, settled in seconds.
 3. **Get a QR ticket** to show (or save) at the door.
 
-**Coaches** get their own space to:
-- **Create sessions** (with cover photo and place autocomplete),
-- **Manage events** and **scan attendees' QR** to check them in,
-- Set a **contact** shown on their offers, and get **paid straight to their wallet**.
+**Hosts**
+- **Create a session** (with a cover photo and place autocomplete),
+- get **paid straight to their wallet**, and **scan attendees' QR** to check them in.
 
-Payments go **straight from client to coach** — Sesión never holds funds, takes no card, and asks for no KYC. A coach anywhere in the world can get paid instantly, even where cards and Stripe don't work.
+The small NIM payment = **reserving your spot**: it keeps people committed (fewer no-shows) and, if the host brings gear or books a court, supports them. Payments go **straight from joiner to host** — Sesión never holds funds, takes no card, and asks for no KYC. So anyone, anywhere, can join in seconds.
+
+**Trust:** hosts build a reputation from real ratings (only people who booked can rate), no-show reports flag flaky hosts, and new hosts are clearly labelled — no fake reviews.
 
 ## Tech stack
 
 - React + Vite + Tailwind CSS
 - [`@nimiq/mini-app-sdk`](https://www.npmjs.com/package/@nimiq/mini-app-sdk) for wallet access and payments
-- FastAPI + SQLite backend (sessions, tickets, profiles, check-in, uploads)
+- FastAPI + SQLite backend (sessions, tickets, profiles, ratings, check-in, uploads)
 - Deployed on Vercel
 
 ## Getting started
@@ -60,6 +61,6 @@ public/         Logo + app QR
 src/
   components/   Reusable UI (SessionCard, CategoryChips, BottomNav, CoachNav, QrScanner, LocationInput)
   data/         Categories and static reference data
-  lib/          Nimiq SDK wrapper, store, profiles, uploads, helpers
-  pages/        Client screens + coach space (CoachLayout, CoachEvents, Create, CoachEventDetail, CoachProfile)
+  lib/          Nimiq SDK wrapper, store, profiles, ratings, uploads, helpers
+  pages/        Join-side screens + host space (CoachLayout, CoachEvents, Create, CoachEventDetail, CoachProfile)
 ```

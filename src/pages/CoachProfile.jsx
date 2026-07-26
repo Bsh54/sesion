@@ -106,7 +106,7 @@ export default function CoachProfile() {
         >
           <ArrowLeft size={20} />
         </button>
-        <h1 className="font-display text-3xl font-extrabold tracking-tight">Coach profile</h1>
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">Host profile</h1>
       </header>
 
       {/* Avatar + name */}
@@ -129,7 +129,7 @@ export default function CoachProfile() {
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               maxLength={40}
-              placeholder="Your coach name"
+              placeholder="Your host name"
               autoFocus
               className="w-full rounded-full border border-border bg-surface px-4 py-2.5 text-center outline-none focus:ring-2 focus:ring-lime"
             />

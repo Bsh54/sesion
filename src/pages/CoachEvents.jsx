@@ -29,7 +29,7 @@ export default function CoachEvents() {
   return (
     <div className="mx-auto max-w-2xl px-5 pb-28 pt-5">
       <header>
-        <h1 className="font-display text-3xl font-extrabold tracking-tight">Coach</h1>
+        <h1 className="font-display text-3xl font-extrabold tracking-tight">Host</h1>
       </header>
 
       {/* Stats */}
