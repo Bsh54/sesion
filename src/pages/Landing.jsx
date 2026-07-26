@@ -29,7 +29,10 @@ export default function Landing() {
   const [featured, setFeatured] = useState([])
 
   useEffect(() => {
-    getSessions().then((s) => setFeatured(s.slice(0, 4)))
+    getSessions().then((s) => {
+      const now = Date.now()
+      setFeatured(s.filter((x) => new Date(x.startsAt).getTime() >= now).slice(0, 4))
+    })
   }, [])
 
   return (

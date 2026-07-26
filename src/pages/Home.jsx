@@ -14,10 +14,12 @@ export default function Home() {
     getSessions().then(setAll)
   }, [])
 
-  const sessions = useMemo(
-    () => (all ? (category ? all.filter((s) => s.category === category) : all) : []),
-    [category, all],
-  )
+  const sessions = useMemo(() => {
+    if (!all) return []
+    const now = Date.now()
+    const upcoming = all.filter((s) => new Date(s.startsAt).getTime() >= now)
+    return category ? upcoming.filter((s) => s.category === category) : upcoming
+  }, [category, all])
 
   return (
     <div className="mx-auto max-w-6xl px-5 pb-28 pt-4">
