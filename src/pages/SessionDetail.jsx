@@ -522,7 +522,7 @@ export default function SessionDetail() {
             <p className="tnum mt-3 text-xs text-ink-soft">
               Ticket {ticket.code.slice(0, 10).toUpperCase()}
             </p>
-            <p className="text-xs text-ink-soft">Show this QR at the door</p>
+            <p className="text-xs text-ink-soft">Show this QR to the host when you arrive</p>
 
             <button
               onClick={() => saveCanvasImage('booked-qr', `sesion-ticket-${session.id}.png`)}

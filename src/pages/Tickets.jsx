@@ -84,7 +84,9 @@ export default function Tickets() {
           <TicketIcon size={28} className="text-ink-soft" strokeWidth={1.75} />
         </div>
         <h2 className="mt-4 font-display text-2xl font-bold">No tickets yet</h2>
-        <p className="mt-1 text-sm text-ink-soft">Book a session and your QR ticket shows up here.</p>
+        <p className="mt-1 text-sm text-ink-soft">
+          Reserve a session and your QR ticket shows up here.
+        </p>
         <button
           onClick={() => navigate('/app')}
           className="mt-5 rounded-full bg-ink px-6 py-3 font-semibold text-bg transition-transform active:scale-95"
@@ -177,7 +179,7 @@ export default function Tickets() {
             <p className="tnum mt-3 text-xs text-ink-soft">
               Ticket {active.code.slice(0, 10).toUpperCase()}
             </p>
-            <p className="text-xs text-ink-soft">Show this QR at the door</p>
+            <p className="text-xs text-ink-soft">Show this QR to the host when you arrive</p>
 
             <button
               onClick={() => saveCanvasImage('ticket-qr', `sesion-ticket-${active.session.id}.png`)}

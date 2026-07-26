@@ -206,7 +206,7 @@ export default function Profile() {
       >
         <span>
           <span className="block font-display text-lg font-bold">Host space</span>
-          <span className="text-sm text-bg/60">Host sessions and get paid in NIM</span>
+          <span className="text-sm text-bg/60">Start a session — others join, you get paid in NIM</span>
         </span>
         <ChevronRight size={20} className="text-bg/70" />
       </button>

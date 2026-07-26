@@ -71,11 +71,11 @@ export default function Landing() {
           {/* Centered hero content */}
           <div className="mx-auto flex min-h-[70vh] max-w-3xl flex-col items-center justify-center px-5 pb-16 text-center sm:min-h-[76vh]">
             <h1 className="font-display text-[clamp(2.5rem,9vw,5rem)] font-extrabold uppercase leading-[1] tracking-tight text-bg">
-              Find your next <span className="text-lime">session.</span>
+              Start it. Or just <span className="text-lime">join.</span>
             </h1>
             <p className="mx-auto mt-5 max-w-md text-lg text-bg/85">
-              Start or join local fitness sessions near you. See who&apos;s coming, and reserve
-              your spot in NIM — no card, no borders.
+              Anyone can start a session near you — a run, yoga, a pickup game. Others just join:
+              see who&apos;s coming and reserve your spot in NIM.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3">
               <button
@@ -98,7 +98,7 @@ export default function Landing() {
       {/* 2. FEATURED LISTINGS */}
       <section className="mx-auto max-w-5xl px-5 py-12">
         <div className="mb-6 flex items-end justify-between">
-          <SectionTitle>Featured this week</SectionTitle>
+          <SectionTitle>Happening near you</SectionTitle>
           <button
             onClick={() => navigate('/app')}
             className="flex shrink-0 items-center gap-1 text-sm font-semibold text-ink"
@@ -140,8 +140,8 @@ export default function Landing() {
             Ready to <span className="text-lime">move?</span>
           </h2>
           <p className="mt-4 max-w-lg text-lg text-bg/70">
-            Find a session near you, see who&apos;s coming, and reserve your spot in NIM — in
-            seconds, from anywhere in the world.
+            Start one, or join one near you — see who&apos;s coming and reserve your spot in NIM,
+            in seconds, from anywhere in the world.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row">
             <button

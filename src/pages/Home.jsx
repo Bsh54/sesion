@@ -47,7 +47,7 @@ export default function Home() {
 
       {/* Sessions */}
       <section className="mt-6">
-        <h2 className="mb-3 font-display text-2xl font-bold">This week</h2>
+        <h2 className="mb-3 font-display text-2xl font-bold">Happening near you</h2>
         {all === null ? (
           <div className="flex justify-center py-16">
             <Loader2 size={28} className="animate-spin text-ink-soft" />
