@@ -155,13 +155,13 @@ export const SESSIONS = [
 
 // Practical info shown on every session (kept generic for the demo).
 export const GOOD_TO_KNOW = [
-  'Arrive 10 minutes early to check in.',
-  'Bring water and a towel.',
+  'Arrive a few minutes early so the host can check you in.',
+  'Bring water and good energy.',
   'Free cancellation up to 2 hours before.',
 ]
 
-// What to bring / amenities, shown on the detail page.
-export const AMENITIES = ['Mat provided', 'Changing room', 'Water refill', 'Free parking']
+// The vibe — shown on the detail page.
+export const AMENITIES = ['All levels welcome', 'Come as you are', 'Meet new people', 'Just show up']
 
 // Focus areas per category (shown as tags on the detail page).
 export const FOCUS = {
@@ -182,9 +182,9 @@ export const INTENSITY = {
 
 // Generic session flow shown under "What to expect".
 export const AGENDA = [
-  { phase: 'Warm-up', detail: 'Gentle mobilisation to prepare your body.' },
-  { phase: 'Main set', detail: 'The core of the session, guided step by step.' },
-  { phase: 'Cool-down', detail: 'Stretch and breathe to recover and finish.' },
+  { phase: 'Get there', detail: 'Arrive a few minutes early — the host checks you in.' },
+  { phase: 'Do the thing', detail: 'Warm up, then the session together, at your own pace.' },
+  { phase: 'Wind down', detail: 'Cool down, say hi, maybe plan the next one.' },
 ]
 
 // Sample reviews (social proof) — shared across sessions for the demo.

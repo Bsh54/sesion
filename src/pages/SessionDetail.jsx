@@ -348,7 +348,7 @@ export default function SessionDetail() {
             <SectionTitle>Details</SectionTitle>
             <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
-                { label: 'Class size', value: `${session.capacity} people` },
+                { label: 'Group size', value: `${session.capacity} people` },
                 { label: 'Language', value: 'English' },
                 { label: 'Intensity', value: INTENSITY[session.level] ?? 'Moderate' },
                 { label: 'Category', value: category?.label ?? '—' },
@@ -391,7 +391,7 @@ export default function SessionDetail() {
 
           {/* What's included */}
           <div>
-            <SectionTitle>What&apos;s included</SectionTitle>
+            <SectionTitle>The vibe</SectionTitle>
             <div className="mt-3 flex flex-wrap gap-2">
               {AMENITIES.map((a) => (
                 <span
