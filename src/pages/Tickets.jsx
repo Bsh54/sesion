@@ -155,7 +155,7 @@ export default function Tickets() {
 
             <div className="-mt-4">
               <span className="inline-flex items-center gap-1 rounded-full bg-success/15 px-3 py-1 text-xs font-semibold text-success">
-                <Check size={14} /> Confirmed
+                <Check size={14} /> {active.checkedIn ? 'Checked in' : 'Confirmed'}
               </span>
               <h2 className="mt-2 font-display text-2xl font-bold">{active.session.title}</h2>
               <p className="tnum text-sm text-ink-soft">
@@ -186,8 +186,13 @@ export default function Tickets() {
               <Download size={18} /> Save ticket
             </button>
 
-            {/* Rate the host — only after the session */}
-            {isPast && (
+            {/* Rate the host — only after the session AND if you were checked in */}
+            {isPast && !active.checkedIn && (
+              <p className="mt-6 border-t border-border pt-5 text-center text-sm text-ink-soft">
+                Rating opens once the host checks you in at the session.
+              </p>
+            )}
+            {isPast && active.checkedIn && (
               <div className="mt-6 border-t border-border pt-5 text-left">
                 <p className="text-center text-sm font-semibold">How was it?</p>
                 <div className="mt-2 flex justify-center gap-1.5">

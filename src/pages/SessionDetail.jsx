@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import { CATEGORIES, GOOD_TO_KNOW, AMENITIES, FOCUS, INTENSITY, AGENDA } from '../data/sessions'
 import { getSession } from '../lib/store'
-import { addTicket } from '../lib/tickets'
+import { addTicket, getTickets } from '../lib/tickets'
 import { saveCanvasImage } from '../lib/download'
 import { getAttendees } from '../lib/profile'
 import { displayAvatar, shortAddress } from '../lib/avatar'
@@ -62,9 +62,16 @@ export default function SessionDetail() {
   const [ticket, setTicket] = useState(null)
   const [error, setError] = useState('')
   const [attendees, setAttendees] = useState([])
+  const [alreadyBooked, setAlreadyBooked] = useState(false)
 
   useEffect(() => {
     getSession(id).then((s) => setSession(s ?? null))
+    ;(async () => {
+      const w = await getAddress()
+      if (!w) return
+      const tks = await getTickets(w)
+      setAlreadyBooked(tks.some((t) => t.sessionId === id))
+    })()
   }, [id])
 
   useEffect(() => {
@@ -96,6 +103,7 @@ export default function SessionDetail() {
 
   const category = CATEGORIES.find((c) => c.id === session.category)
   const { left, scarce } = spotsInfo(session)
+  const isPast = new Date(session.startsAt).getTime() < Date.now()
   const mapSrc =
     session.lat != null && session.lon != null
       ? `https://maps.google.com/maps?q=${session.lat},${session.lon}&z=15&output=embed`
@@ -122,6 +130,7 @@ export default function SessionDetail() {
           /* payment succeeded; ticket save is best-effort */
         }
       }
+      setAlreadyBooked(true)
       setTicket({ code: res.receipt })
       setStatus('booked')
     } catch (e) {
@@ -180,21 +189,32 @@ export default function SessionDetail() {
               </div>
             </div>
 
-            <button
-              onClick={handleBook}
-              disabled={status !== 'idle' || left <= 0}
-              className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-4 text-base font-semibold text-bg transition-transform active:scale-95 disabled:opacity-50"
-            >
-              {status === 'paying' ? (
-                <>
-                  <Loader2 size={20} className="animate-spin" /> Processing…
-                </>
-              ) : left <= 0 ? (
-                'Sold out'
-              ) : (
-                `Reserve · ${session.priceNim} NIM`
-              )}
-            </button>
+            {alreadyBooked ? (
+              <button
+                onClick={() => navigate('/tickets')}
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-success/15 px-6 py-4 text-base font-semibold text-success transition-transform active:scale-95"
+              >
+                <Check size={20} /> You&apos;re going — view ticket
+              </button>
+            ) : (
+              <button
+                onClick={handleBook}
+                disabled={status !== 'idle' || left <= 0 || isPast}
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-4 text-base font-semibold text-bg transition-transform active:scale-95 disabled:opacity-50"
+              >
+                {status === 'paying' ? (
+                  <>
+                    <Loader2 size={20} className="animate-spin" /> Processing…
+                  </>
+                ) : isPast ? (
+                  'Session ended'
+                ) : left <= 0 ? (
+                  'Sold out'
+                ) : (
+                  `Reserve · ${session.priceNim} NIM`
+                )}
+              </button>
+            )}
             {error && (
               <p className="mt-3 text-center text-sm font-medium text-destructive" role="alert">
                 {error}
