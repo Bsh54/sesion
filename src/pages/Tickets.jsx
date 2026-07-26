@@ -1,26 +1,73 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { QRCodeCanvas } from 'qrcode.react'
-import { Ticket as TicketIcon, Calendar, MapPin, QrCode, X, Check, Loader2, Download } from 'lucide-react'
+import {
+  Ticket as TicketIcon,
+  Calendar,
+  MapPin,
+  QrCode,
+  X,
+  Check,
+  Loader2,
+  Download,
+  Star,
+} from 'lucide-react'
 import { getTickets } from '../lib/tickets'
 import { getSessions } from '../lib/store'
 import { getAddress } from '../lib/nimiq'
+import { rateSession, getMyRating } from '../lib/ratings'
 import { saveCanvasImage } from '../lib/download'
 import { formatDate, formatTime } from '../lib/format'
 
 export default function Tickets() {
   const navigate = useNavigate()
+  const [wallet, setWallet] = useState(null)
   const [items, setItems] = useState(null) // null = loading
   const [active, setActive] = useState(null)
 
+  const [stars, setStars] = useState(0)
+  const [noShow, setNoShow] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [rated, setRated] = useState(false)
+
   useEffect(() => {
     ;(async () => {
-      const wallet = await getAddress()
-      const [tks, sessions] = await Promise.all([getTickets(wallet), getSessions()])
+      const w = await getAddress()
+      setWallet(w)
+      const [tks, sessions] = await Promise.all([getTickets(w), getSessions()])
       const map = Object.fromEntries(sessions.map((s) => [s.id, s]))
       setItems(tks.map((t) => ({ ...t, session: map[t.sessionId] })).filter((x) => x.session))
     })()
   }, [])
+
+  // Load any existing rating when a ticket opens.
+  useEffect(() => {
+    setStars(0)
+    setNoShow(false)
+    setRated(false)
+    if (active && wallet) {
+      getMyRating(active.session.id, wallet).then((r) => {
+        if (r) {
+          setStars(r.stars)
+          setNoShow(r.noShow)
+          setRated(true)
+        }
+      })
+    }
+  }, [active, wallet])
+
+  const submitRating = async () => {
+    if (!wallet || stars === 0) return
+    setSubmitting(true)
+    try {
+      await rateSession({ sessionId: active.session.id, rater: wallet, stars, noShow })
+      setRated(true)
+    } catch {
+      /* ignore */
+    } finally {
+      setSubmitting(false)
+    }
+  }
 
   if (items === null) {
     return (
@@ -47,6 +94,8 @@ export default function Tickets() {
       </div>
     )
   }
+
+  const isPast = active && new Date(active.session.startsAt).getTime() < Date.now()
 
   return (
     <div className="mx-auto max-w-2xl px-5 pb-28 pt-6">
@@ -91,7 +140,7 @@ export default function Tickets() {
           onClick={() => setActive(null)}
         >
           <div
-            className="w-full max-w-sm rounded-ticket bg-surface p-6 text-center"
+            className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-ticket bg-surface p-6 text-center"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-end">
@@ -136,6 +185,44 @@ export default function Tickets() {
             >
               <Download size={18} /> Save ticket
             </button>
+
+            {/* Rate the host — only after the session */}
+            {isPast && (
+              <div className="mt-6 border-t border-border pt-5 text-left">
+                <p className="text-center text-sm font-semibold">How was it?</p>
+                <div className="mt-2 flex justify-center gap-1.5">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button key={n} onClick={() => setStars(n)} aria-label={`${n} stars`}>
+                      <Star
+                        size={30}
+                        className={n <= stars ? 'fill-lime text-lime' : 'text-border'}
+                      />
+                    </button>
+                  ))}
+                </div>
+                <label className="mt-3 flex items-center justify-center gap-2 text-sm text-ink-soft">
+                  <input
+                    type="checkbox"
+                    checked={noShow}
+                    onChange={(e) => setNoShow(e.target.checked)}
+                    className="h-4 w-4 accent-coral"
+                  />
+                  Report a no-show (host didn&apos;t show up)
+                </label>
+                <button
+                  onClick={submitRating}
+                  disabled={submitting || stars === 0}
+                  className="mt-3 w-full rounded-full bg-ink py-3 font-semibold text-bg transition-transform active:scale-95 disabled:opacity-50"
+                >
+                  {submitting ? 'Saving…' : rated ? 'Update rating' : 'Submit rating'}
+                </button>
+                {rated && (
+                  <p className="mt-2 text-center text-xs text-success">
+                    Thanks — your rating helps keep Sesión trustworthy. 🙏
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}

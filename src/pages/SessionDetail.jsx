@@ -17,15 +17,7 @@ import {
   Download,
   Loader2,
 } from 'lucide-react'
-import {
-  CATEGORIES,
-  GOOD_TO_KNOW,
-  AMENITIES,
-  SAMPLE_REVIEWS,
-  FOCUS,
-  INTENSITY,
-  AGENDA,
-} from '../data/sessions'
+import { CATEGORIES, GOOD_TO_KNOW, AMENITIES, FOCUS, INTENSITY, AGENDA } from '../data/sessions'
 import { getSession } from '../lib/store'
 import { addTicket } from '../lib/tickets'
 import { saveCanvasImage } from '../lib/download'
@@ -108,7 +100,9 @@ export default function SessionDetail() {
     session.lat != null && session.lon != null
       ? `https://maps.google.com/maps?q=${session.lat},${session.lon}&z=15&output=embed`
       : `https://maps.google.com/maps?q=${encodeURIComponent(session.location)}&z=14&output=embed`
-  const bio = `${session.coach.name} is a verified ${category?.label.toLowerCase() ?? 'fitness'} coach with ${session.coach.sessions} sessions hosted and a ${session.coach.rating}-star rating from the community.`
+  const bio = session.coach.isNew
+    ? `${session.coach.name} is new on Sesión. Be one of the first to join — and rate the session afterwards to help build trust.`
+    : `${session.coach.name} has hosted ${session.coach.sessions} session${session.coach.sessions > 1 ? 's' : ''} on Sesión, with a ${session.coach.rating}-star rating from ${session.coach.ratingCount} attendee${session.coach.ratingCount > 1 ? 's' : ''}.`
 
   const handleBook = async () => {
     setError('')
@@ -234,9 +228,17 @@ export default function SessionDetail() {
             <h1 className="font-display text-4xl font-extrabold uppercase leading-tight tracking-tight">
               {session.title}
             </h1>
-            <div className="mt-1 flex items-center gap-1 text-sm font-medium text-ink-soft">
-              <Star size={15} className="fill-lime text-lime" /> {session.coach.rating} · with{' '}
-              {session.coach.name}
+            <div className="mt-1 flex items-center gap-1.5 text-sm font-medium text-ink-soft">
+              {session.coach.isNew ? (
+                <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold">
+                  New host
+                </span>
+              ) : (
+                <span className="flex items-center gap-1">
+                  <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
+                </span>
+              )}
+              <span>· with {session.coach.name}</span>
             </div>
             <div className="mt-4 flex gap-3">
               <Stat icon={Clock} label="Duration" value={`${session.durationMin}m`} />
@@ -276,9 +278,15 @@ export default function SessionDetail() {
                   </p>
                   <p className="text-sm text-ink-soft">{session.coach.sessions} sessions hosted</p>
                 </div>
-                <span className="flex items-center gap-1 font-semibold">
-                  <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
-                </span>
+                {session.coach.isNew ? (
+                  <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold text-ink-soft">
+                    New host
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 font-semibold">
+                    <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
+                  </span>
+                )}
               </div>
               <p className="mt-3 text-sm leading-relaxed text-ink-soft">{bio}</p>
 
@@ -419,31 +427,38 @@ export default function SessionDetail() {
             <p className="mt-2 max-w-prose leading-relaxed text-ink-soft">{session.description}</p>
           </div>
 
-          {/* Reviews */}
+          {/* Ratings */}
           <div>
-            <div className="flex items-center justify-between">
-              <SectionTitle>Reviews</SectionTitle>
-              <span className="flex items-center gap-1.5 text-sm font-semibold">
-                <Star size={15} className="fill-lime text-lime" /> {session.coach.rating}
-                <span className="font-medium text-ink-soft">
-                  · {session.coach.sessions} sessions
-                </span>
-              </span>
-            </div>
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              {SAMPLE_REVIEWS.map((r) => (
-                <div key={r.name} className="rounded-card border border-border p-4">
-                  <div className="flex items-center gap-3">
-                    <img src={r.avatar} alt="" className="h-9 w-9 rounded-full object-cover" />
-                    <div className="flex-1">
-                      <p className="text-sm font-semibold">{r.name}</p>
-                      <Stars rating={r.rating} />
-                    </div>
+            <SectionTitle>Ratings</SectionTitle>
+            {session.coach.ratingCount > 0 ? (
+              <div className="mt-3 flex items-center gap-5 rounded-card border border-border p-4">
+                <div className="text-center">
+                  <p className="font-display text-4xl font-extrabold leading-none">
+                    {session.coach.rating}
+                  </p>
+                  <div className="mt-1 flex justify-center">
+                    <Stars rating={session.coach.rating} />
                   </div>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">{r.text}</p>
                 </div>
-              ))}
-            </div>
+                <div className="text-sm text-ink-soft">
+                  <p>
+                    Based on {session.coach.ratingCount} rating
+                    {session.coach.ratingCount > 1 ? 's' : ''} from people who booked.
+                  </p>
+                  {session.coach.noShows > 0 && (
+                    <p className="mt-1 font-medium text-coral">
+                      {session.coach.noShows} no-show report
+                      {session.coach.noShows > 1 ? 's' : ''}.
+                    </p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <p className="mt-3 rounded-card border border-border p-4 text-sm text-ink-soft">
+                No ratings yet — this host is new. Attendees can rate the session afterwards, which
+                builds trust over time.
+              </p>
+            )}
           </div>
 
           {/* Good to know */}

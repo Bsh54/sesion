@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Star } from 'lucide-react'
 import { CATEGORIES } from '../data/sessions'
-import { avatarUrl } from '../lib/avatar'
+import { displayAvatar } from '../lib/avatar'
 import { formatDate, formatTime, spotsInfo } from '../lib/format'
 
 export default function SessionCard({ session }) {
@@ -45,14 +45,20 @@ export default function SessionCard({ session }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img
-              src={avatarUrl(session.coach.wallet)}
+              src={displayAvatar(session.coach.avatar, session.coach.wallet)}
               alt=""
               className="h-6 w-6 rounded-full bg-lime object-cover"
             />
             <span className="text-sm font-medium text-ink-soft">{session.coach.name}</span>
-            <span className="flex items-center gap-0.5 text-sm font-semibold text-ink">
-              <Star size={13} className="fill-lime text-lime" /> {session.coach.rating}
-            </span>
+            {session.coach.isNew ? (
+              <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-ink-soft">
+                New
+              </span>
+            ) : (
+              <span className="flex items-center gap-0.5 text-sm font-semibold text-ink">
+                <Star size={13} className="fill-lime text-lime" /> {session.coach.rating}
+              </span>
+            )}
           </div>
           {scarce && (
             <span className="rounded-full bg-coral/10 px-2 py-0.5 text-xs font-semibold text-coral">
